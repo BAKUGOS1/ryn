@@ -27,3 +27,12 @@ Core-workflow continuation: read `CORE_WORKFLOW_AUDIT.md`. Latest source adds de
 Deployment handoff: `DEPLOYMENT.md`. The owner authorized publishing, then deferred Vercel reconnection and backend setup. The Vercel connector requires reauthentication; no deployment exists from this session. `vercel.json` supplies Next.js install/build commands. Deploy the tested feature branch, not the older foundation on main; keep worker/indexing flags disabled for the initial public demo.
 
 Public demo deployed after Vercel reconnection: https://futureflow-livid.vercel.app/ — production READY, deployment `dpl_4iiL6Jysb5RVt9BcTwz3JExtu81g`, source `3c6d90e62195ad4b25f97686321448d6ff52ee6d`. This supersedes the earlier authentication blocker. See `DEPLOYMENT.md` for actual live fetch/browser evidence. Backend/provider setup remains deferred; worker/indexing flags are false. Do not confuse the deployed source commit with later documentation-only commits or claim live automation acceptance.
+
+## Live Ryn deployment receipt
+
+- Public URL: https://ryn-workflows.vercel.app/
+- Same Vercel project ID, now named `ryn`; repository https://github.com/BAKUGOS1/ryn; draft PR https://github.com/BAKUGOS1/ryn/pull/1 remains unmerged.
+- Production deployment `dpl_7C8Q6hpFso8U4cFf9Pz76pjHgxva`: **READY**, no alias error, source `a3790131d08918bba3ae6ba6159353d7b6326413`. Build approximately 29 seconds. Both the new public URL and the existing `futureflow-livid.vercel.app` alias point at this build.
+- Live direct fetch: eight public/setup/SEO routes returned 200 with Ryn titles and new canonical URLs where applicable; no former product name appeared in their responses. Preview/auth remain noindex. Robots still disallows crawling and sitemap has no indexed entries. Unconfigured organizations API returns 503.
+- Cloud browser opened the public Ryn homepage and navigated to the sample studio on the new domain. This is public demo verification, not hosted authentication or live automation acceptance.
+- Runtime error-log/drain acceptance was not performed. No hosted migrations, real notification, paid feature, billing or indexing activation. Source commit differs from later documentation-only receipt commits.

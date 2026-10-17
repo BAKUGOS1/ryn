@@ -4,7 +4,7 @@ Current brand: **Ryn**. Assigned new public domain: https://ryn-workflows.vercel
 
 ## Current state
 
-The owner authorized a public deployment, initially deferred account/backend setup, then reconnected Vercel. The **public demo is now deployed** at https://futureflow-livid.vercel.app/.
+The owner authorized a public deployment, initially deferred account/backend setup, then reconnected Vercel. The **public demo is now deployed** at https://ryn-workflows.vercel.app/. The original receipt below documents the earlier FutureFlow deployment; the latest Ryn receipt is at the end.
 
 - Vercel team: `mohitr9898-5504s-projects`; project: `prj_0ePAmcEZXzHcHTI2irN68L7IGX78`.
 - Production deployment: `dpl_4iiL6Jysb5RVt9BcTwz3JExtu81g`, **READY**.
@@ -44,3 +44,12 @@ Use a dedicated approved Supabase project. Apply all ordered migrations once, in
 Run hosted advisors, JWT/PostgREST tenant isolation and the signed-in create/save/publish/pause journey. Real execution additionally needs the Inngest credentials, webhook encryption keyring, Resend sender and controlled inbox, owned target hosts and egress review described in `CORE_WORKFLOW_AUDIT.md`. Enable workers and real sends only after that setup and approval. Billing remains deferred.
 
 A future public product launch also requires the remaining load/concurrency, backup/restore and operational acceptance gates. Search indexing should be enabled only on the approved production origin after those launch decisions.
+
+## Live Ryn deployment receipt
+
+- Public URL: https://ryn-workflows.vercel.app/
+- Same Vercel project ID, now named `ryn`; repository https://github.com/BAKUGOS1/ryn; draft PR https://github.com/BAKUGOS1/ryn/pull/1 remains unmerged.
+- Production deployment `dpl_7C8Q6hpFso8U4cFf9Pz76pjHgxva`: **READY**, no alias error, source `a3790131d08918bba3ae6ba6159353d7b6326413`. Build approximately 29 seconds. Both the new public URL and the existing `futureflow-livid.vercel.app` alias point at this build.
+- Live direct fetch: eight public/setup/SEO routes returned 200 with Ryn titles and new canonical URLs where applicable; no former product name appeared in their responses. Preview/auth remain noindex. Robots still disallows crawling and sitemap has no indexed entries. Unconfigured organizations API returns 503.
+- Cloud browser opened the public Ryn homepage and navigated to the sample studio on the new domain. This is public demo verification, not hosted authentication or live automation acceptance.
+- Runtime error-log/drain acceptance was not performed. No hosted migrations, real notification, paid feature, billing or indexing activation. Source commit differs from later documentation-only receipt commits.
