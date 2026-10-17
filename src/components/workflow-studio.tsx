@@ -169,7 +169,7 @@ export default function WorkflowStudio({
   function add(type: "condition" | "audit" | "email") {
     if (nodes.length >= 20) return;
     const nodeId =
-      type + "_" + crypto.randomUUID().replaceAll("-", "").slice(0, 4);
+      type + "_" + crypto.randomUUID().replaceAll("-", "").slice(0, 8);
     const node: Definition["nodes"][number] =
       type === "condition"
         ? {
@@ -426,6 +426,7 @@ export default function WorkflowStudio({
               <label>
                 Comparison
                 <select
+                  aria-label="Comparison operator"
                   value={current.config.operator}
                   onChange={(e) =>
                     update({
@@ -447,6 +448,7 @@ export default function WorkflowStudio({
               <label>
                 Expected value as JSON
                 <input
+                  aria-label="Expected value as JSON"
                   key={selected + ":value"}
                   defaultValue={JSON.stringify(current.config.value)}
                   disabled={current.config.operator === "is_null"}

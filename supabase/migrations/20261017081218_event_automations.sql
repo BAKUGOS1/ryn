@@ -162,7 +162,7 @@ declare e public.incoming_events;w public.workflows;v public.workflow_versions;r
  if p_recipient is not null and p_recipient is distinct from v.recipient_id then raise exception 'Recipient mismatch' using errcode='FF001';end if;
  r:=gen_random_uuid();if not private.monitor_reserve(p_org,'run',r,300) then update public.incoming_events set state='skipped',completed_at=now() where id=p_event;return null;end if;
  insert into public.workflow_runs(id,organization_id,workflow_id,version_id,event_id,state,steps) values(r,p_org,w.id,e.version_id,p_event,'queued',p_trace);
- if p_audit then insert into public.audit_logs(organization_id,actor_id,action,resource_id) values(p_org,w.created_by,'workflow.audit_record',r);end if;
+ if p_audit then insert into public.audit_logs(organization_id,actor_id,action,resource_id) select p_org,w.created_by,'workflow.audit_record',r from jsonb_array_elements(p_trace) step where step->>'operation'='audit_record' and step->>'status'='recorded';end if;
  if p_recipient is not null then
   d:=gen_random_uuid();if private.monitor_reserve(p_org,'notification',d,100) then
    insert into public.monitor_deliveries(id,organization_id,workflow_run_id,recipient_id,recipient_email,subject,body) values(d,p_org,r,p_recipient,v.recipient_email,'FutureFlow: '||(v.definition->>'name'),'Workflow "'||(v.definition->>'name')||'" matched its published conditions. Open the workspace run history for evidence.');insert into private.monitor_outbox(organization_id,delivery_id) values(p_org,d);
@@ -171,12 +171,17 @@ declare e public.incoming_events;w public.workflows;v public.workflow_versions;r
  update public.incoming_events set state='completed',completed_at=now() where id=p_event;return jsonb_build_object('run_id',r);
 end;$$;
 
+-- Persist the final notification step status alongside the parent run summary.
+create function private.notification_trace(p_steps jsonb,p_status text) returns jsonb language sql immutable set search_path='' as $$
+ select coalesce(jsonb_agg(case when step->>'operation'='send_notification' then step||jsonb_build_object('status',p_status) else step end order by ord),'[]'::jsonb) from jsonb_array_elements(p_steps) with ordinality as entries(step,ord)
+$$;
+revoke all on function private.notification_trace(jsonb,text) from public,anon,authenticated;
 create or replace function private.claim_monitor_delivery(p_org uuid,p_job uuid) returns jsonb language plpgsql security definer set search_path='' as $$
 declare d public.monitor_deliveries;t uuid;begin
  select * into d from public.monitor_deliveries where id=p_job and organization_id=p_org for update;
  if not found or d.state in ('succeeded','skipped','requires_review') or (d.state='sending' and d.lease_until>now()) then return null;end if;
- if exists(select 1 from public.organizations where id=p_org and archived_at is not null) or not exists(select 1 from public.organization_members m join auth.users u on u.id=m.user_id where m.organization_id=p_org and m.user_id=d.recipient_id and m.status='active' and lower(u.email)=d.recipient_email and u.email_confirmed_at is not null and not coalesce(u.is_anonymous,false)) then update public.monitor_deliveries set state='skipped' where id=p_job;update public.monitor_runs set state='skipped',steps=jsonb_set(steps,'{notification}','"recipient_unavailable"') where id=d.run_id and organization_id=p_org;update public.workflow_runs set state=case when d.attempts>=5 or d.first_attempt_at<now()-interval '23 hours' then 'requires_review' else 'skipped' end where id=d.workflow_run_id and organization_id=p_org;return null;end if;
- if d.attempts>=5 or d.first_attempt_at<now()-interval '23 hours' then update public.monitor_deliveries set state='requires_review' where id=p_job;update public.monitor_runs set state='requires_review' where id=d.run_id and organization_id=p_org;update public.workflow_runs set state=case when d.attempts>=5 or d.first_attempt_at<now()-interval '23 hours' then 'requires_review' else 'skipped' end where id=d.workflow_run_id and organization_id=p_org;return null;end if;
+ if exists(select 1 from public.organizations where id=p_org and archived_at is not null) or not exists(select 1 from public.organization_members m join auth.users u on u.id=m.user_id where m.organization_id=p_org and m.user_id=d.recipient_id and m.status='active' and lower(u.email)=d.recipient_email and u.email_confirmed_at is not null and not coalesce(u.is_anonymous,false)) then update public.monitor_deliveries set state='skipped' where id=p_job;update public.monitor_runs set state='skipped',steps=jsonb_set(steps,'{notification}','"recipient_unavailable"') where id=d.run_id and organization_id=p_org;update public.workflow_runs set state=case when d.attempts>=5 or d.first_attempt_at<now()-interval '23 hours' then 'requires_review' else 'skipped' end,steps=private.notification_trace(steps,case when d.attempts>=5 or d.first_attempt_at<now()-interval '23 hours' then 'requires_review' else 'skipped' end) where id=d.workflow_run_id and organization_id=p_org;return null;end if;
+ if d.attempts>=5 or d.first_attempt_at<now()-interval '23 hours' then update public.monitor_deliveries set state='requires_review' where id=p_job;update public.monitor_runs set state='requires_review' where id=d.run_id and organization_id=p_org;update public.workflow_runs set state=case when d.attempts>=5 or d.first_attempt_at<now()-interval '23 hours' then 'requires_review' else 'skipped' end,steps=private.notification_trace(steps,case when d.attempts>=5 or d.first_attempt_at<now()-interval '23 hours' then 'requires_review' else 'skipped' end) where id=d.workflow_run_id and organization_id=p_org;return null;end if;
  t:=gen_random_uuid();update public.monitor_deliveries set state='sending',lease_token=t,lease_until=now()+interval '1 minute',attempts=attempts+1,first_attempt_at=coalesce(first_attempt_at,now()) where id=p_job returning * into d;
  return jsonb_build_object('organization_id',p_org,'job_id',p_job,'token',t,'first_attempt_at',d.first_attempt_at,'recipient',d.recipient_email,'subject',d.subject,'text',d.body);
 end;$$;
@@ -187,7 +192,7 @@ declare d public.monitor_deliveries;s text;begin
  if not found or d.state<>'sending' or d.lease_token<>p_token or d.lease_until<=now() then return;end if;
  s:=case when p_result='retry' and d.attempts<5 then 'queued' when p_result='retry' then 'requires_review' else p_result end;
  update public.monitor_deliveries set state=s,provider_id=p_provider_id,error_category=p_error,lease_until=null where id=p_job;
- if s in ('succeeded','requires_review') then update public.workflow_runs set state=s where id=d.workflow_run_id and organization_id=p_org;update public.monitor_runs set state=s,steps=jsonb_set(steps,'{notification}',to_jsonb(s)) where id=d.run_id and organization_id=p_org;end if;
+ if s in ('succeeded','requires_review') then update public.workflow_runs set state=s,steps=private.notification_trace(steps,s) where id=d.workflow_run_id and organization_id=p_org;update public.monitor_runs set state=s,steps=jsonb_set(steps,'{notification}',to_jsonb(s)) where id=d.run_id and organization_id=p_org;end if;
 end;$$;
 
 alter table public.workflows enable row level security;

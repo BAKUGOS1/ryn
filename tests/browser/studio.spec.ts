@@ -40,7 +40,9 @@ test("edits and simulates the shared workflow contract without external effects"
   await expect(
     page.getByText("Valid workflow · 2 steps · One immutable contract"),
   ).toBeVisible();
-  await page.getByLabel("Comparison").selectOption("gt");
+  await page
+    .getByRole("combobox", { name: "Comparison operator", exact: true })
+    .selectOption("gt");
   await page.getByLabel("Expected value as JSON").fill("5");
   await page.getByLabel("Sample JSON").fill('{"priority":6}');
   await page.getByRole("button", { name: "Simulate draft" }).click();

@@ -121,6 +121,15 @@ it("runs signed intake -> durable relay -> qualified graph -> shared email pipel
   });
   expect(count).toBe(1);
   expect((await rows("workflow_runs"))[0].state).toBe("succeeded");
+  const completedSteps = (await rows("workflow_runs"))[0].steps as {
+    operation?: string;
+    status: string;
+  }[];
+  if (completedSteps.some((step) => step.operation === "send_notification"))
+    expect(
+      completedSteps.find((step) => step.operation === "send_notification")
+        ?.status,
+    ).toBe("succeeded");
   for (const metric of ["intake", "run", "notification"])
     expect(
       (await rows("monitor_usage")).find((r) => r.metric === metric)?.quantity,
