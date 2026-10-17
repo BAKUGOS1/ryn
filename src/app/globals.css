@@ -1109,3 +1109,341 @@ input::placeholder {
     flex-grow: 1;
   }
 }
+textarea {
+  font: inherit;
+  width: 100%;
+  max-width: 100%;
+  resize: vertical;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--panel);
+}
+textarea:focus-visible {
+  outline: 3px solid #538e6f;
+  outline-offset: 3px;
+}
+.workflow-card {
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.workflow-card:first-of-type {
+  margin-top: 16px;
+}
+.workflow-card h3 {
+  font-size: 16px;
+  font-weight: 600;
+}
+.workflow-card details {
+  margin: 16px 0;
+}
+.workflow-card summary {
+  cursor: pointer;
+  font-size: 12px;
+}
+.workflow-card textarea {
+  font-family: monospace;
+  font-size: 12px;
+}
+.workflow-card .form-stack {
+  margin-top: 14px;
+}
+
+/* The editor is loaded only when opened. Its list controls work without dragging. */
+.studio-launcher {
+  margin: 1rem 0;
+}
+.workflow-studio {
+  margin: 1rem 0;
+  border: 1px solid var(--border, #dbe4de);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fafcf9;
+  color: #18332d;
+}
+.studio-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.2rem;
+  border-bottom: 1px solid #dbe4de;
+  background: #fff;
+}
+.studio-toolbar h3 {
+  margin: 0.3rem 0 0;
+  font-size: 1.05rem;
+}
+.studio-toolbar .button {
+  flex-shrink: 0;
+}
+.studio-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+}
+.studio-main {
+  min-width: 0;
+  border-right: 1px solid #dbe4de;
+}
+.studio-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 1rem;
+  background: #edf4ec;
+  border-bottom: 1px solid #dbe4de;
+}
+.studio-trigger strong,
+.studio-trigger small {
+  display: block;
+}
+.studio-trigger small {
+  color: #526c62;
+  font-size: 0.75rem;
+  margin-top: 0.15rem;
+}
+.studio-canvas {
+  height: 510px;
+  width: 100%;
+  background: #f6f8f3;
+}
+.studio-node {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 240px;
+  min-height: 100px;
+  gap: 0.7rem;
+  padding: 1rem;
+  border: 1px solid #c8d5cd;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 20px #193f3010;
+}
+.studio-node.is-selected {
+  outline: 2px solid #20725b;
+  outline-offset: 3px;
+}
+.studio-node-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  color: #285d44;
+  background: #e8f2e5;
+  border-radius: 10px;
+}
+.studio-node-icon.condition {
+  color: #685029;
+  background: #faf0d8;
+}
+.studio-node strong,
+.studio-node small,
+.studio-node span:not(.studio-node-icon) {
+  display: block;
+}
+.studio-node strong {
+  font-size: 0.88rem;
+  text-transform: capitalize;
+  margin: 0.3rem 0;
+}
+.studio-node small {
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  color: #60736a;
+}
+.studio-node div > span {
+  font-size: 0.65rem;
+  color: #60736a;
+  overflow-wrap: anywhere;
+}
+.studio-node .studio-node-branches {
+  position: absolute;
+  display: flex;
+  justify-content: space-between;
+  left: 22%;
+  right: 20%;
+  bottom: -23px;
+}
+.workflow-studio .react-flow__handle {
+  width: 9px;
+  height: 9px;
+  background: #24745b;
+  border: 2px solid white;
+}
+.studio-palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border-top: 1px solid #dbe4de;
+  background: #fff;
+}
+.studio-palette button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 44px;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid #dbe4de;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.75rem;
+  background: #fff;
+  color: #285d44;
+  cursor: pointer;
+}
+.studio-palette button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.studio-inspector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  background: #fff;
+  min-width: 0;
+}
+.studio-inspector h4 {
+  margin: 0;
+}
+.studio-inspector label {
+  font-size: 0.72rem;
+}
+.studio-inspector input,
+.studio-inspector select {
+  font-size: 0.8rem;
+  width: 100%;
+  min-width: 0;
+}
+.studio-inspector small {
+  font-size: 0.66rem;
+  line-height: 1.5;
+  color: #60736a;
+}
+.studio-connections,
+.studio-simulation {
+  padding: 1.2rem;
+  border-top: 1px solid #dbe4de;
+}
+.studio-connections summary,
+.studio-simulation summary {
+  cursor: pointer;
+  font-weight: 650;
+  min-height: 44px;
+  line-height: 1.5;
+}
+.studio-connect-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  align-items: end;
+}
+.studio-edge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  padding: 0.7rem 0;
+  overflow-wrap: anywhere;
+}
+.studio-edge button {
+  min-height: 44px;
+  border: 0;
+  background: transparent;
+  color: #99492f;
+  cursor: pointer;
+}
+.studio-validation {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid #dbe4de;
+  font-size: 0.8rem;
+}
+.studio-validation p {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #285d44;
+  margin: 0;
+}
+.studio-validation ul {
+  padding-left: 1.2rem;
+  color: #8a452e;
+}
+.studio-simulation textarea {
+  width: 100%;
+}
+.studio-simulation label {
+  display: block;
+}
+.studio-simulation .button {
+  margin: 0.75rem 0;
+}
+.studio-test-result {
+  margin-top: 0.8rem;
+}
+.run-timeline {
+  list-style: none;
+  padding: 0.3rem 0;
+  margin: 0.5rem 0;
+}
+.run-timeline li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.4rem;
+  border-left: 2px solid #b3cfbf;
+  padding: 0.6rem 1rem;
+  margin-left: 0.3rem;
+  font-size: 0.8rem;
+}
+.run-timeline li span {
+  color: #527161;
+}
+.run-timeline li small {
+  grid-column: 1/-1;
+  color: #61726a;
+}
+@media (max-width: 900px) {
+  .studio-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .studio-inspector {
+    border-top: 1px solid #dbe4de;
+  }
+  .studio-main {
+    border-right: 0;
+  }
+  .studio-canvas {
+    height: 400px;
+  }
+}
+@media (max-width: 520px) {
+  .studio-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.85rem;
+  }
+  .studio-connect-fields {
+    grid-template-columns: 1fr;
+  }
+  .studio-palette {
+    gap: 0.3rem;
+  }
+  .studio-palette button {
+    font-size: 0.7rem;
+  }
+  .studio-canvas {
+    height: 350px;
+  }
+  .studio-edge {
+    align-items: start;
+  }
+  .run-timeline li {
+    grid-template-columns: 1fr;
+  }
+}

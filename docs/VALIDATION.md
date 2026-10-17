@@ -43,3 +43,15 @@ Use a dedicated development Supabase project and two real verified accounts:
 - Seed runner uses `node --import tsx` to avoid sandbox-blocked CLI IPC socket; no network privileges changed.
 
 **Phase 1 release gate is not fully accepted.** No hosted Supabase project, production data, remote commits, deployment, live billing, real notification provider or workflow executor was changed or activated.
+
+## Webhook/deadline and initial editor extension — 17 October 2026
+
+This section supersedes earlier scope statements for the feature branch. The previous monitor commit passed GitHub Actions run [39007861188](https://github.com/BAKUGOS1/futureflow/actions/runs/39007861188), including all four HTTP smoke checks that were locally network-blocked.
+
+Current extension: **116 local tests pass across 11 files**, including 30 new graph/crypto/intake/SQL/editor-contract tests. Strict typecheck, ESLint, formatting, disposable seed and production build passed. Registry production audit after adding React Flow reports 0 advisories. This does not certify the application as vulnerability-free.
+
+New coverage includes signature/body/ID/timestamp tampering, replay/conflict handling, encrypted secret tenant binding, key rotation fencing, normalized-field privacy, strict graphs, timezone/DST consistency, version pinning, pause/resume, one-time deadlines, superseded schedules, RLS/private-secret denial, shared quota enforcement, recipient revalidation and relay recovery. SQL executes all three actual migrations with Auth fixtures. Provider calls are deterministic adapters; no real emails were sent.
+
+Added CI browser checks run the public local-only editor sample on desktop and 390px: keyboard opening, invalid graph recovery, typed condition editing, sample simulation, disabled saving, no API mutations and overflow. Current extension browser results must be read from the draft PR's latest checks; they are not yet accepted in this record. A local supervised development preview rendered the new page, but its client interaction did not activate in the cloud browser, so that inspection is not counted as a successful editor test.
+
+Hosted authentication/authoring, real Supabase PostgREST, live Inngest/Resend, multi-connection contention/load, egress restrictions and beta-user acceptance remain open. No hosted schema, deployment, live billing or real provider send was performed.

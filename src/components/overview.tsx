@@ -85,7 +85,7 @@ export function Overview({
           <div className="future">
             <GitBranch size={23} />
             <span>Reliable automation</span>
-            <span className="tiny">NEXT</span>
+            <span className="tiny">READY</span>
           </div>
         </div>
       </section>
@@ -102,8 +102,8 @@ export function Overview({
         </div>
         <div>
           <span>Workspace stage</span>
-          <strong className="role-value">Foundation</strong>
-          <small>Automation arrives in Phase 2</small>
+          <strong className="role-value">Build & test</strong>
+          <small>Publish when your integrations are connected</small>
         </div>
       </section>
       <div className="overview-grid">
@@ -159,7 +159,12 @@ export function Overview({
             Website monitoring, incident tracking and email alerts — with the
             evidence behind every run.
           </p>
-          <span className="tag">Connect a monitor in the Monitors tab</span>
+          <Link
+            className="button button-secondary"
+            href={preview ? "/preview?tab=studio" : `/app/${orgId}/automations`}
+          >
+            Build a workflow <ArrowRight size={16} />
+          </Link>
         </section>
       </div>
     </>

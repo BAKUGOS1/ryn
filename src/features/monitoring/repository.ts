@@ -1,12 +1,12 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
-import { monitoringEnv } from "./runtime";
+import { automationEnv } from "./runtime";
 export type Rpc = (
   name: string,
   args?: Record<string, unknown>,
 ) => Promise<unknown>;
 export function workerRepository(): Rpc {
-  const env = monitoringEnv();
+  const env = automationEnv();
   if (!env) throw new Error("monitoring_not_configured");
   const db = createClient(env.url, env.serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },

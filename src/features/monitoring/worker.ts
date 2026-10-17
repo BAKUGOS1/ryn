@@ -43,8 +43,10 @@ const deliveryLease = z.object({
 export async function dispatch(
   rpc: Rpc,
   publish: (event: OutboxLease) => Promise<void>,
+  admitProbes = true,
 ) {
-  await rpc("dispatch_monitors");
+  await rpc("recover_notification_deliveries");
+  if (admitProbes) await rpc("dispatch_monitors");
   const rows = z.array(envelope).parse(await rpc("claim_monitor_outbox"));
   for (const row of rows) {
     try {

@@ -1,9 +1,13 @@
 import "server-only";
 import { z } from "zod";
-export function monitoringEnv(
+export function automationEnv(
   source: Record<string, string | undefined> = process.env,
 ) {
-  if (source.MONITORING_ENABLED !== "true") return null;
+  if (
+    source.MONITORING_ENABLED !== "true" &&
+    source.AUTOMATION_ENABLED !== "true"
+  )
+    return null;
   const result = z
     .object({
       url: z.url(),
@@ -12,7 +16,7 @@ export function monitoringEnv(
       eventKey: z.string().min(20),
       emailKey: z.string().min(10),
       from: z.email(),
-      hosts: z.string().min(1),
+      hosts: z.string(),
     })
     .safeParse({
       url: source.NEXT_PUBLIC_SUPABASE_URL,
@@ -21,12 +25,13 @@ export function monitoringEnv(
       eventKey: source.INNGEST_EVENT_KEY,
       emailKey: source.RESEND_API_KEY,
       from: source.ALERT_FROM_EMAIL,
-      hosts: source.MONITOR_ALLOWED_HOSTS,
+      hosts: source.MONITOR_ALLOWED_HOSTS ?? "",
     });
   if (!result.success) return null;
   const allowedHosts = result.data.hosts
     .split(",")
-    .map((x) => x.trim().toLowerCase());
+    .map((x) => x.trim().toLowerCase())
+    .filter(Boolean);
   if (
     allowedHosts.some(
       (h) => !/^(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/.test(h),
@@ -34,4 +39,12 @@ export function monitoringEnv(
   )
     return null;
   return { ...result.data, allowedHosts };
+}
+
+export function monitoringEnv(
+  source: Record<string, string | undefined> = process.env,
+) {
+  if (source.MONITORING_ENABLED !== "true") return null;
+  const env = automationEnv(source);
+  return env?.allowedHosts.length ? env : null;
 }

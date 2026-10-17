@@ -1,0 +1,11 @@
+# Visual workflow authoring
+
+React Flow 12.12.0 powers the lazy-loaded canvas; custom FutureFlow nodes and inspector use the same strict schema as webhook/deadline workers. Canvas positions are presentation-only and re-arranged on reopen; they are not currently persisted. Compilation strips all React Flow state and revalidates the domain graph. No second engine, expressions or arbitrary provider actions are introduced.
+
+Implemented: node palette, condition/action inspector, true/false/success handles, keyboard/mobile connection forms, remove-step/connection controls, optimistic draft save, immutable publication controls, saved JSON fallback, run step timelines, empty states and local sample simulation. Existing create forms provide signed-event and deadline notification templates. Monitor incident center remains in Monitors. Viewing history requires membership; authoring and publish actions require editor/admin/owner; webhook setup/rotation requires owner/admin.
+
+Safe simulation calls the same deterministic evaluator on configured scalar paths. It creates no event, DB write, quota consumption, audit record or email. The isolated public sample at `/preview?tab=studio` supports editing/simulation with saving disabled. It contains labeled example data only. The actual workspace saves authenticated drafts; publish remains a separate explicit action.
+
+React Flow keyboard accessibility stays enabled; every connection also has select/button controls that do not require drag gestures. Editor code is fetched on opening; the main shell does not load the canvas eagerly. Critical controls target 44px; layout stacks the inspector on narrow screens. Source: [React Flow accessibility](https://reactflow.dev/learn/advanced-use/accessibility) and [controlled flow hooks](https://reactflow.dev/api-reference/hooks/use-nodes-state).
+
+Tests assert canvas/worker contract parity and graph rejection. Browser suite exercises open, edit, invalid graph recovery, typed comparisons, no network mutations in simulation and horizontal overflow on desktop and 390px. Actual results are recorded in `VALIDATION.md`; authenticated hosted authoring and beta-user acceptance are separate gates. Closing the editor discards unsaved changes. Automatic canvas-position persistence, undo/redo and richer templates remain UX follow-ups.

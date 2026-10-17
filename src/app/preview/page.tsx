@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { StudioLauncher } from "@/components/studio-launcher";
+import { sampleWorkflow } from "@/features/automations/templates";
 import { WorkspaceShell } from "@/components/workspace-shell";
 import { Overview } from "@/components/overview";
 export default async function Preview({
@@ -7,7 +9,10 @@ export default async function Preview({
   searchParams: Promise<{ tab?: string }>;
 }) {
   const { tab } = await searchParams;
-  const section = tab === "members" || tab === "settings" ? tab : "overview";
+  const section =
+    tab === "members" || tab === "settings" || tab === "studio"
+      ? tab
+      : "overview";
   return (
     <WorkspaceShell
       preview
@@ -15,7 +20,24 @@ export default async function Preview({
       organizations={[{ id: "preview", name: "Acme studio" }]}
       section={section}
     >
-      {section === "overview" ? (
+      {section === "studio" ? (
+        <>
+          <span className="eyebrow">LOCAL SAMPLE · NO SAVED CHANGES</span>
+          <h1>Try a signal. See the path.</h1>
+          <p className="muted">
+            Build and simulate a sample workflow. No account data, emails or
+            external actions are used.
+          </p>
+          <StudioLauncher
+            organizationId="preview"
+            id="preview"
+            revision={1}
+            definition={sampleWorkflow}
+            recipients={[]}
+            allowSave={false}
+          />
+        </>
+      ) : section === "overview" ? (
         <Overview
           preview
           name="Acme studio"

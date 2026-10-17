@@ -1,3 +1,7 @@
+import {
+  dispatchEvents,
+  processWorkflowEvent,
+} from "@/features/automations/worker";
 import { z } from "zod";
 import { NonRetriableError } from "inngest";
 import { inngest } from "./client";
@@ -7,7 +11,7 @@ import {
   processDelivery,
 } from "@/features/monitoring/worker";
 import { workerRepository } from "@/features/monitoring/repository";
-import { monitoringEnv } from "@/features/monitoring/runtime";
+import { automationEnv, monitoringEnv } from "@/features/monitoring/runtime";
 import { probe } from "@/features/monitoring/safe-http";
 import { sendEmail } from "@/features/monitoring/email";
 const eventData = z
@@ -20,16 +24,30 @@ export const schedule = inngest.createFunction(
     concurrency: 1,
     retries: 3,
   },
-  async ({ step }) =>
-    step.run("claim-and-relay", () =>
-      dispatch(workerRepository(), async (row) => {
+  async ({ step }) => {
+    await step.run("event-intake-relay", () =>
+      dispatchEvents(workerRepository(), async (row) => {
         await inngest.send({
           id: `${row.id}:${row.attempt}`,
-          name: "futureflow/monitor." + row.kind,
+          name: "futureflow/workflow.event",
           data: { organizationId: row.organization_id, jobId: row.job_id },
         });
       }),
-    ),
+    );
+    return step.run("claim-and-relay", () =>
+      dispatch(
+        workerRepository(),
+        async (row) => {
+          await inngest.send({
+            id: `${row.id}:${row.attempt}`,
+            name: "futureflow/monitor." + row.kind,
+            data: { organizationId: row.organization_id, jobId: row.job_id },
+          });
+        },
+        !!monitoringEnv(),
+      ),
+    );
+  },
 );
 export const probes = inngest.createFunction(
   {
@@ -66,7 +84,7 @@ export const deliveries = inngest.createFunction(
   async ({ event, step }) => {
     const data = eventData.safeParse(event.data);
     if (!data.success) throw new NonRetriableError("invalid_event");
-    const env = monitoringEnv();
+    const env = automationEnv();
     if (!env) throw new NonRetriableError("monitoring_disabled");
     return step.run("send-and-record", () =>
       processDelivery(
@@ -84,6 +102,29 @@ export const deliveries = inngest.createFunction(
             },
             { apiKey: env.emailKey, from: env.from },
           ),
+      ),
+    );
+  },
+);
+
+export const events = inngest.createFunction(
+  {
+    id: "workflow-event",
+    triggers: [{ event: "futureflow/workflow.event" }],
+    concurrency: [
+      { limit: 2, key: "event.data.organizationId" },
+      { limit: 10 },
+    ],
+    retries: 4,
+  },
+  async ({ event, step }) => {
+    const data = eventData.safeParse(event.data);
+    if (!data.success) throw new NonRetriableError("invalid_event");
+    return step.run("evaluate-and-queue-actions", () =>
+      processWorkflowEvent(
+        workerRepository(),
+        data.data.organizationId,
+        data.data.jobId,
       ),
     );
   },

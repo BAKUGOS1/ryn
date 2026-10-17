@@ -2,7 +2,7 @@
 
 Build on branch `phase-2/website-monitor` after the Phase 1 snapshot on main. Public source publication explicitly authorized on 17 October 2026. No deployment, hosted DB migration or real email sends are authorized by this implementation task.
 
-Scope: immutable fixed monitor version; constrained HTTPS endpoint; a minute dispatcher with Postgres due-job claims and transactional outbox; Inngest step execution; two qualifying failures -> one incident + one email; first successful recovery resolves and notifies; persisted probe/run/delivery evidence; pause/resume, tenant isolation, separate probe/run/notification safety meters. This is the first monitor vertical slice, not yet the webhook/deadline variants or graph editor.
+Scope: immutable fixed monitor version; constrained HTTPS endpoint; a minute dispatcher with Postgres due-job claims and transactional outbox; Inngest step execution; two qualifying failures -> one incident + one email; first successful recovery resolves and notifies; persisted probe/run/delivery evidence; pause/resume, tenant isolation, separate probe/run/notification safety meters. This was the initial monitor slice. Signed webhook/deadline variants and editor source now extend it; see `PHASE_2_DELIVERY.md` and `PHASE_3_DELIVERY.md`.
 
 SSRF: exact operator-controlled host allowlist, HTTPS only, no credentials/query/fragment/custom ports, resolve all addresses and require public unicast, pin DNS address through Node HTTPS lookup with TLS hostname verification, no redirects, no user headers, timeout/byte bounds, max 1 request per second per hostname in DB. Additional deployment-level egress restrictions remain a live gate.
 
