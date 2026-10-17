@@ -1,0 +1,9 @@
+node_modules
+.next
+pnpm-lock.yaml
+next-env.d.ts
+playwright-report
+test-results
+supabase/.temp
+
+docs/FUTUREFLOW_FINAL_MASTER.md

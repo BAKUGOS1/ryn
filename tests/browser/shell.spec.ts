@@ -1,0 +1,27 @@
+import { test, expect } from "@playwright/test";
+test("preview navigation and no horizontal overflow", async ({ page }) => {
+  await page.goto("/preview");
+  await expect(
+    page.getByRole("heading", { name: "Your workspace, in focus." }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= window.innerWidth,
+    ),
+  ).toBe(true);
+  await page.getByRole("link", { name: "Members", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "A place for your people." }),
+  ).toBeVisible();
+  await page.getByRole("link", { name: "Settings", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Make your workspace yours." }),
+  ).toBeVisible();
+});
+test("setup mode does not expose a working sign-in form", async ({ page }) => {
+  await page.goto("/auth/login");
+  await expect(
+    page.getByText("Authentication is not connected", { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByLabel("Password", { exact: true })).toHaveCount(0);
+});
