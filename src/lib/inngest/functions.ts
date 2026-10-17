@@ -53,10 +53,7 @@ export const probes = inngest.createFunction(
   {
     id: "monitor-probe",
     triggers: [{ event: "futureflow/monitor.probe" }],
-    concurrency: [
-      { limit: 2, key: "event.data.organizationId" },
-      { limit: 10 },
-    ],
+    concurrency: [{ limit: 2, key: "event.data.organizationId" }, { limit: 5 }],
     retries: 4,
   },
   async ({ event, step }) => {
@@ -111,10 +108,7 @@ export const events = inngest.createFunction(
   {
     id: "workflow-event",
     triggers: [{ event: "futureflow/workflow.event" }],
-    concurrency: [
-      { limit: 2, key: "event.data.organizationId" },
-      { limit: 10 },
-    ],
+    concurrency: [{ limit: 2, key: "event.data.organizationId" }, { limit: 5 }],
     retries: 4,
   },
   async ({ event, step }) => {
