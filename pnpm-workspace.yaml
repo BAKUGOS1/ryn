@@ -1,5 +1,6 @@
 allowBuilds:
   esbuild: true
+  protobufjs: true
   unrs-resolver: true
 minimumReleaseAgeExclude:
   - "@next/env@16.4.2"

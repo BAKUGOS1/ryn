@@ -20,3 +20,5 @@
 5. No monitoring, secrets store, external email actions or webhook intake exists yet. SSRF, signed replay-protected webhooks, encryption keys and effect idempotency are Phase 2 requirements, not tested controls in this slice.
 6. Backup/restore, privacy, retention, merchant/tax eligibility and security advisor checks against hosted Supabase remain open. No compliance claims.
 7. Development lint dependencies require a coordinated supported-version upgrade; see README.
+
+On the Phase 2 branch, `PHASE_2_DELIVERY.md` supersedes the earlier statement that no monitoring implementation exists. It documents the guarded worker adapter, SSRF defenses, idempotent incident/delivery logic and unverified hosted gates. Service-role access is server-only, uses reviewed tenant-explicit RPCs, and remains disabled until configured.

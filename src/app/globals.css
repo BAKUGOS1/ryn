@@ -1078,3 +1078,34 @@ input::placeholder {
     scroll-behavior: auto !important;
   }
 }
+.run-evidence {
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.run-evidence:first-of-type {
+  margin-top: 18px;
+}
+.run-evidence summary {
+  font-size: 12px;
+  cursor: pointer;
+}
+.run-evidence pre {
+  overflow: auto;
+  max-width: 100%;
+  font-size: 12px;
+  padding: 14px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+.member-row .form-stack {
+  margin-top: 0;
+}
+@media (max-width: 760px) {
+  .sidebar nav {
+    flex-wrap: wrap;
+  }
+  .sidebar nav a {
+    min-width: 42%;
+    flex-grow: 1;
+  }
+}

@@ -6,4 +6,4 @@ Mutation path: JSON input and byte bound → exact Origin check → fresh Supaba
 
 Database is the authority for memberships, roles and lifecycle. Browser-hidden controls are UX only. URL organization IDs and client-supplied roles are requests, never proof. Mutations run under the user's JWT. Environment errors fail closed. SSR session refresh proxy preserves cookies and no-store response headers.
 
-Future: Postgres schedules/outbox → Inngest executor → constrained action registry. This is an architecture decision, not an existing execution pipeline. Add separate packages only when a second deployable worker needs them. SQL migration discipline avoids adding an ORM for a second write path in Phase 1.
+Future: Postgres schedules/outbox → Inngest executor → constrained action registry. The Phase 2 branch now implements this pipeline for a constrained website monitor; hosted provider verification is pending. Add separate packages only when a second deployable worker needs them. SQL migration discipline avoids adding an ORM for a second write path in Phase 1.

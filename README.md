@@ -1,8 +1,8 @@
-# FutureFlow — Phase 0 + Phase 1
+# FutureFlow — Phase 1 foundation + Phase 2 monitoring slice
 
-A Next.js / Supabase foundation for an India-first automation SaaS. This package implements the foundation only, not the workflow engine or payments. The supplied final plan remains authoritative; implementation decisions and deviations are in `docs/`.
+A Next.js / Supabase foundation for an India-first automation SaaS. This branch adds the first monitoring vertical slice to the foundation. Webhook/deadline variants, graph editing and payments remain backlog. The supplied final plan remains authoritative; implementation decisions and deviations are in `docs/`.
 
-**Status:** source implemented and locally tested. Hosted Supabase auth/database verification, a full signed-in browser journey, and 390px mobile verification remain open. Not certified production-ready. No deployment, remote push or live billing performed.
+**Status:** source implemented and locally tested. Hosted Supabase auth/database verification, a full signed-in browser journey, and 390px mobile verification remain open. Not certified production-ready. Source is published to GitHub; no deployment or live billing performed.
 
 ## Run locally
 
@@ -25,7 +25,9 @@ Visit `http://localhost:4173`. `/preview` is explicitly read-only sample data; t
 6. Restart the application; sign up, confirm email, create a workspace, invite a second verified email, then test access with each role. Invite links are shown once and must be manually shared. **No invitation email is sent.**
 7. Run the hosted checklist in `docs/VALIDATION.md` before treating Phase 1 as accepted. Confirm Supabase's auth rate limits and CAPTCHA settings before any public exposure.
 
-## Working features
+See `docs/PHASE_2_DELIVERY.md` for the monitoring pipeline, setup, actual test scope and remaining live gates. Monitoring is disabled by default and no services have been deployed.
+
+## Foundation features
 
 - Signup, login, logout, confirmation and password-recovery routes using Supabase SSR and fresh server identity verification.
 - Organization create/read/update/switch; owner-only reversible archive retains audit records.
@@ -65,4 +67,4 @@ pnpm test:e2e
 
 Next 16.4.2 / React 19.3.1 / Supabase SSR 0.12.7 / Supabase JS 2.118.0 are pinned with lockfile. TypeScript 7 failed the current typescript-eslint parser; TypeScript 6.0.3 is pinned. ESLint 10 has incompatible React/import/a11y plugin peers; ESLint 9.39.5 is pinned for compatibility although npm flags it unsupported. Track a coordinated lint-tool upgrade before launch. These development tools are not shipped as runtime auth infrastructure.
 
-Read `THIRD_PARTY_NOTICES.md` before redistribution. No third-party starter was cloned wholesale. No credentials are included. See `docs/ROADMAP.md` for Phase 2–6; no unfinished engines or billing stubs were generated.
+Read `THIRD_PARTY_NOTICES.md` before redistribution. No third-party starter was cloned wholesale. Inngest SDK (Apache-2.0) and ipaddr.js (MIT) are maintained dependencies, pinned for Phase 2. No credentials are included. See `docs/ROADMAP.md` for Phase 2–6; no unfinished engines or billing stubs were generated.

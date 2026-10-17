@@ -1,3 +1,4 @@
+import { MonitoringPanel } from "@/components/monitoring-panel";
 import { notFound, redirect } from "next/navigation";
 import { authorize } from "@/lib/auth";
 import { readEnv } from "@/lib/env";
@@ -25,7 +26,7 @@ export default async function Workspace({
   const { org: id, section } = await params;
   if (
     !idSchema.safeParse(id).success ||
-    !["overview", "members", "settings"].includes(section)
+    !["overview", "members", "settings", "monitors"].includes(section)
   )
     notFound();
   const ctx = await authorize(id).catch(() => null);
@@ -61,7 +62,9 @@ export default async function Workspace({
   if (invites?.error) throw new Error("Invitations unavailable");
   return (
     <WorkspaceShell org={org} organizations={orgs.data} section={section}>
-      {section === "overview" ? (
+      {section === "monitors" ? (
+        <MonitoringPanel id={id} role={role} members={list} />
+      ) : section === "overview" ? (
         <Overview
           name={org.name}
           members={list.filter((m) => m.status === "active").length}

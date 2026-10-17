@@ -1,5 +1,6 @@
 import Link from "next/link";
 import {
+  Activity,
   LayoutDashboard,
   Users,
   Settings2,
@@ -57,6 +58,7 @@ export function WorkspaceShell({
         <nav aria-label="Workspace navigation">
           {[
             [LayoutDashboard, "overview", "Overview"],
+            ...(!preview ? [[Activity, "monitors", "Monitors"]] : []),
             [Users, "members", "Members"],
             [Settings2, "settings", "Settings"],
           ].map(([Icon, key, label]) => {

@@ -152,14 +152,14 @@ export function Overview({
           </div>
         </section>
         <section className="panel next-panel">
-          <span className="eyebrow">UP NEXT · PHASE 2</span>
+          <span className="eyebrow">WEBSITE MONITORING</span>
           <GitBranch size={27} />
           <h2>From signal to action.</h2>
           <p>
             Website monitoring, incident tracking and email alerts — with the
             evidence behind every run.
           </p>
-          <span className="tag">Not connected yet</span>
+          <span className="tag">Connect a monitor in the Monitors tab</span>
         </section>
       </div>
     </>

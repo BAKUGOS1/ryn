@@ -49,3 +49,5 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 Other repositories were concept references only. Dependencies retain their upstream licenses in installed distributions; lockfile records versions. No Activepieces, Inngest demo, BoxyHQ, Dub, n8n, Windmill or Automatisch implementation/assets copied.
+
+Phase 2 dependencies: `inngest` 4.24.0 (Apache-2.0 SDK; not the Inngest server) and `ipaddr.js` 2.5.0 (MIT). Used as dependencies; no upstream implementation source copied. Dependency distributions retain their notices.
