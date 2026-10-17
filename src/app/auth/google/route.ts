@@ -1,7 +1,6 @@
-import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { readEnv } from "@/lib/env";
-import { checkOrigin, failure } from "@/lib/http";
+import { checkOrigin, failure, HttpError, json } from "@/lib/http";
 
 export async function POST(request: Request) {
   try {
@@ -12,12 +11,12 @@ export async function POST(request: Request) {
       provider: "google",
       options: { redirectTo: env.origin + "/auth/callback" },
     });
-    const response = NextResponse.redirect(
-      !error && data.url ? data.url : env.origin + "/auth/login?error=google",
-      303,
-    );
-    response.headers.set("Cache-Control", "private, no-store");
-    return response;
+    if (error || !data.url)
+      throw new HttpError(
+        502,
+        "Google sign-in could not be started. Please try again.",
+      );
+    return json({ url: data.url });
   } catch (error) {
     return failure(error);
   }

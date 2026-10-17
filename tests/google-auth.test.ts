@@ -34,7 +34,7 @@ it("keeps sign-in disabled until Supabase is configured", async () => {
   expect(mock.signInWithOAuth).not.toHaveBeenCalled();
 });
 
-it("uses the configured callback and redirects to the provider without caching", async () => {
+it("uses the configured callback and returns a provider URL without caching", async () => {
   mock.signInWithOAuth.mockResolvedValue({
     data: { url: "https://accounts.google.com/o/oauth2/v2/auth?state=test" },
     error: null,
@@ -44,10 +44,10 @@ it("uses the configured callback and redirects to the provider without caching",
     provider: "google",
     options: { redirectTo: "https://app.example.com/auth/callback" },
   });
-  expect(response.status).toBe(303);
-  expect(response.headers.get("location")).toContain(
-    "https://accounts.google.com/",
-  );
+  expect(response.status).toBe(200);
+  expect(await response.json()).toEqual({
+    url: "https://accounts.google.com/o/oauth2/v2/auth?state=test",
+  });
   expect(response.headers.get("cache-control")).toBe("private, no-store");
 });
 
@@ -57,8 +57,6 @@ it("returns a generic sign-in error without exposing provider details", async ()
     error: { message: "private provider detail" },
   });
   const response = await POST(request());
-  expect(response.headers.get("location")).toBe(
-    "https://app.example.com/auth/login?error=google",
-  );
+  expect(response.status).toBe(502);
   expect(await response.text()).not.toContain("private provider detail");
 });

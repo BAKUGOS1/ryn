@@ -2,7 +2,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ActionForm } from "./forms";
-import { Button } from "./ui/button";
 export function AuthForm({
   mode,
 }: {
@@ -12,12 +11,18 @@ export function AuthForm({
   return (
     <>
       {(mode === "login" || mode === "signup") && (
-        <form action="/auth/google" method="post" className="form-stack">
-          <Button type="submit" variant="secondary">
-            Continue with Google
-          </Button>
+        <>
+          <ActionForm
+            endpoint="/auth/google"
+            submit="Continue with Google"
+            onSuccess={(data) => {
+              if (data.url) window.location.assign(data.url);
+            }}
+          >
+            {null}
+          </ActionForm>
           <p className="muted">Or continue with your email</p>
-        </form>
+        </>
       )}
       <ActionForm
         endpoint={"/api/auth/" + mode}
