@@ -2,7 +2,17 @@
 
 ## Current state
 
-The owner authorized a public deployment, then deferred Vercel reconnection and backend setup. Deployment was not created: the Vercel connector returned `UNAUTHORIZED` and explicitly required reauthentication. No project, domain, environment setting or database was modified during that attempt.
+The owner authorized a public deployment, initially deferred account/backend setup, then reconnected Vercel. The **public demo is now deployed** at https://futureflow-livid.vercel.app/.
+
+- Vercel team: `mohitr9898-5504s-projects`; project: `prj_0ePAmcEZXzHcHTI2irN68L7IGX78`.
+- Production deployment: `dpl_4iiL6Jysb5RVt9BcTwz3JExtu81g`, **READY**.
+- Deployed source: `3c6d90e62195ad4b25f97686321448d6ff52ee6d`, branch `phase-2/website-monitor`; `main` remains unmerged.
+- Node.js 24.x; Next.js; build approximately 74 seconds. APP_ORIGIN is the public demo origin. Worker and indexing flags are explicitly false; no Supabase/provider credentials were supplied.
+- The dedicated demo project allows public access without Vercel authentication. No paid add-on, domain purchase, hosted DB migration, real notification or billing activation was performed.
+
+Post-deployment verification: Node fetch returned 200 for home, guide, use cases, security, preview, login, robots and sitemap. Preview/auth responses carry noindex headers. robots blocks crawling, sitemap contains no indexed entries, and the unconfigured organizations API returns 503/no-store. The cloud browser opened the public URL without login, loaded the lazy editor, verified the matching sample path and then the non-matching/skipped path. Local simulation saved or sent nothing. The standalone Playwright HTTP runner could not resolve the host (EAI_AGAIN); those five remote tests are **not** claimed passed. Direct fetch and browser checks provide the live evidence.
+
+Authentication, actual workflow execution and real email delivery remain deferred until backend setup. A hosted public demo is not production acceptance of the connected SaaS.
 
 Last fully verified application commit: `1a6963152b8e635338f8299a5043d2649bcc6a1a`. GitHub Actions [39032630115](https://github.com/BAKUGOS1/futureflow/actions/runs/39032630115) passed 150 automated tests, 5 HTTP checks and 10 public desktop/390px browser checks, plus formatting, lint, typecheck, disposable seed and production build. The deployment-config/documentation checkpoint after it does not change application behavior.
 
