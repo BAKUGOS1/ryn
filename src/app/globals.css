@@ -1503,3 +1503,12 @@ textarea:focus-visible {
     gap: 12px;
   }
 }
+
+.form-fields {
+  display: grid;
+  gap: 18px;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}

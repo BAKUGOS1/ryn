@@ -438,3 +438,156 @@ it("cancels superseded future deadline schedules when a new version is published
   const e = (await rows("incoming_events"))[0];
   expect(e.version_id).not.toBe(w.version);
 });
+
+it("records a terminal notification step when notification quota rejects the action", async () => {
+  const w = await create();
+  await h.admin(
+    "insert into public.monitor_usage(organization_id,period,metric,quantity) values($1,date_trunc('month',now() at time zone 'UTC')::date,'notification',100)",
+    [ctx.a],
+  );
+  await intake(w.source);
+  await processWorkflowEvent(
+    h.rpc,
+    ctx.a,
+    (await rows("incoming_events"))[0].id as string,
+  );
+  const run = (await rows("workflow_runs"))[0];
+  expect(run.state).toBe("skipped");
+  expect(
+    (run.steps as { id: string; status: string }[]).find(
+      (step) => step.id === "notify",
+    )?.status,
+  ).toBe("skipped");
+  expect(await rows("monitor_deliveries")).toHaveLength(0);
+});
+it("synchronizes delivery retry exhaustion with its parent run immediately", async () => {
+  const w = await create();
+  await intake(w.source);
+  await processWorkflowEvent(
+    h.rpc,
+    ctx.a,
+    (await rows("incoming_events"))[0].id as string,
+  );
+  await h.admin(
+    "update public.monitor_deliveries set attempts=5, first_attempt_at=now()-interval '1 minute'",
+  );
+  await h.rpc("recover_notification_deliveries");
+  const run = (await rows("workflow_runs"))[0];
+  expect((await rows("monitor_deliveries"))[0].state).toBe("requires_review");
+  expect(run.state).toBe("requires_review");
+  expect(
+    (run.steps as { id: string; status: string }[]).find(
+      (step) => step.id === "notify",
+    )?.status,
+  ).toBe("requires_review");
+});
+it("preserves uncertain-delivery review when the recipient becomes unavailable", async () => {
+  const w = await create();
+  await intake(w.source);
+  await processWorkflowEvent(
+    h.rpc,
+    ctx.a,
+    (await rows("incoming_events"))[0].id as string,
+  );
+  await h.admin(
+    "update public.monitor_deliveries set attempts=1, first_attempt_at=now()-interval '24 hours'",
+  );
+  await h.admin(
+    "update auth.users set email='changed@example.com' where id=$1",
+    [users.a],
+  );
+  let sends = 0;
+  await processDelivery(
+    h.rpc,
+    ctx.a,
+    (await rows("monitor_deliveries"))[0].id as string,
+    async () => {
+      sends++;
+      return "not-sent";
+    },
+  );
+  expect(sends).toBe(0);
+  expect((await rows("monitor_deliveries"))[0].state).toBe("requires_review");
+  expect((await rows("workflow_runs"))[0].state).toBe("requires_review");
+});
+it("keeps a skipped email branch skipped when a different branch records an audit", async () => {
+  const d = def();
+  d.nodes.push({
+    id: "audit",
+    type: "action",
+    config: { provider: "internal", operation: "audit_record" },
+  });
+  d.edges.push({ from: "check", to: "audit", when: "false" });
+  const w = await create(d);
+  await intake(w.source, "audit_branch", { priority: "low" });
+  await processWorkflowEvent(
+    h.rpc,
+    ctx.a,
+    (await rows("incoming_events"))[0].id as string,
+  );
+  const run = (await rows("workflow_runs"))[0];
+  expect(run.state).toBe("succeeded");
+  expect(
+    (run.steps as { id: string; status: string }[]).find(
+      (step) => step.id === "notify",
+    )?.status,
+  ).toBe("skipped");
+  expect(await rows("monitor_deliveries")).toHaveLength(0);
+});
+it("rejects stale save/publish revisions and viewer writes through real SQL RPCs", async () => {
+  const w = await create(def(), false);
+  await h.as(users.a);
+  const changed = { ...def(), name: "Saved draft" };
+  expect(
+    (
+      await h.query("select public.save_workflow($1,$2,1,$3) revision", [
+        ctx.a,
+        w.id,
+        JSON.stringify(changed),
+      ])
+    ).rows[0].revision,
+  ).toBe(2);
+  await expect(
+    h.query("select public.save_workflow($1,$2,1,$3)", [
+      ctx.a,
+      w.id,
+      JSON.stringify(def()),
+    ]),
+  ).rejects.toThrow("Draft changed");
+  await expect(
+    h.query("select public.publish_workflow($1,$2,1)", [ctx.a, w.id]),
+  ).rejects.toThrow("Draft changed");
+  await h.query("select public.publish_workflow($1,$2,2)", [ctx.a, w.id]);
+  await h.query("select public.set_workflow_state($1,$2,'paused')", [
+    ctx.a,
+    w.id,
+  ]);
+  await expect(
+    h.query("select public.save_workflow($1,$2,3,$3)", [
+      ctx.a,
+      w.id,
+      JSON.stringify(def()),
+    ]),
+  ).rejects.toThrow("Draft changed");
+  await h.admin(
+    "insert into public.organization_members(organization_id,user_id,role,email) values($1,$2,'viewer','viewer@example.com')",
+    [ctx.a, users.viewer],
+  );
+  await h.as(users.viewer);
+  expect(
+    (await h.query("select * from public.workflows where id=$1", [w.id])).rows,
+  ).toHaveLength(1);
+  await expect(
+    h.query("select public.save_workflow($1,$2,4,$3)", [
+      ctx.a,
+      w.id,
+      JSON.stringify(def()),
+    ]),
+  ).rejects.toThrow();
+  await expect(
+    h.query("select public.publish_workflow($1,$2,4)", [ctx.a, w.id]),
+  ).rejects.toThrow();
+  await expect(
+    h.query("select public.set_workflow_state($1,$2,'active')", [ctx.a, w.id]),
+  ).rejects.toThrow();
+});

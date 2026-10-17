@@ -15,6 +15,7 @@ export function StudioLauncher(props: {
 }) {
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [sessionKey, setSessionKey] = useState(0);
   const regionId = useId();
   return (
     <div className="studio-launcher">
@@ -31,7 +32,13 @@ export function StudioLauncher(props: {
         {open ? "Close studio" : "Open visual editor"}
       </button>
       <div id={regionId} hidden={!open}>
-        {loaded && <Studio {...props} />}
+        {loaded && (
+          <Studio
+            key={sessionKey}
+            {...props}
+            onReload={() => setSessionKey((value) => value + 1)}
+          />
+        )}
       </div>
     </div>
   );

@@ -1,17 +1,9 @@
 "use client";
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "./ui/button";
-export async function post(path: string, payload: unknown) {
-  const response = await fetch(path, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  const data = await response.json();
-  if (!response.ok) throw new Error(data.error ?? "Please retry.");
-  return data;
-}
+import { post } from "@/lib/client-api";
+export { post } from "@/lib/client-api";
 export function ActionForm({
   endpoint,
   children,
@@ -27,9 +19,12 @@ export function ActionForm({
 }) {
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const submitting = useRef(false);
   const router = useRouter();
   async function send(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting.current) return;
+    submitting.current = true;
     setBusy(true);
     setMessage("");
     try {
@@ -41,13 +36,16 @@ export function ActionForm({
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Please retry.");
     } finally {
+      submitting.current = false;
       setBusy(false);
     }
   }
   return (
-    <form onSubmit={send} className="form-stack">
-      {children}
-      <Button disabled={busy}>{busy ? "Working…" : submit}</Button>
+    <form onSubmit={send} className="form-stack" aria-busy={busy}>
+      <fieldset className="form-fields" disabled={busy}>
+        {children}
+        <Button disabled={busy}>{busy ? "Working…" : submit}</Button>
+      </fieldset>
       {message && (
         <p role="status" className="form-message">
           {message}

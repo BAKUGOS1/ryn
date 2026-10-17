@@ -1,5 +1,17 @@
 # Validation evidence — 17 October 2026 (Asia/Kolkata)
 
+## Latest core-workflow pass
+
+This section supersedes older result counts and statements about local HTTP/browser execution below. Starting remote head was `d6d15d9` with no newer changes.
+
+- **150 tests pass across 15 Vitest files**, including real SQL migration/RLS/RPC execution, deterministic provider adapters, route authorization adapters, draft revision lifecycle and client failure handling.
+- Three new SQL regressions first failed against the previous schema: quota-skipped notification trace; retry-exhaustion trace; expired delivery plus unavailable recipient. They pass with the new follow-up migration.
+- ESLint, strict typecheck, disposable four-migration seed and production build pass. Public pages remain static; private routes remain dynamic/no-store.
+- All **5 HTTP smoke checks pass locally** against the production build. Desktop/390px browser results are recorded in the latest draft PR check after execution. The prior verified run 39022325963 passed all 5 HTTP and 10 public browser checks.
+- New migration `20261017122144_workflow_delivery_evidence.sql` was exercised in disposable PGlite only; no hosted schema was changed. Hosted Auth/PostgREST, authenticated browser authoring and real provider gates remain open.
+
+See `CORE_WORKFLOW_AUDIT.md` for findings, corrections and exact missing integration inputs. Older sections below are historical evidence, not the current release status.
+
 ## Executed here
 
 | Check                               | Actual result                                                                          | Scope                                                              |

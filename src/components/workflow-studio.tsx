@@ -34,6 +34,8 @@ import {
   type Definition,
 } from "@/features/automations/schema";
 import { post } from "./forms";
+import { ApiError } from "@/lib/client-api";
+import { resolveDraftRevision } from "@/features/automations/draft-session";
 type StepNode = Node<{ node: Definition["nodes"][number] }, "step">;
 const Step = memo(function Step({ data, selected }: NodeProps<StepNode>) {
   const node = data.node;
@@ -99,6 +101,7 @@ export default function WorkflowStudio({
   definition,
   recipients,
   allowSave = true,
+  onReload,
 }: {
   organizationId: string;
   id: string;
@@ -106,6 +109,7 @@ export default function WorkflowStudio({
   definition: unknown;
   recipients: { user_id: string; email: string }[];
   allowSave?: boolean;
+  onReload?: () => void;
 }) {
   const initial = useMemo(
     () => definitionSchema.parse(definition),
@@ -132,6 +136,17 @@ export default function WorkflowStudio({
   );
   const saveLock = useRef(false);
   const [draftRevision, setDraftRevision] = useState(revision);
+  const [savedDefinition, setSavedDefinition] = useState(() =>
+    JSON.stringify(initial),
+  );
+  const [saveConflict, setSaveConflict] = useState(false);
+  const remote = resolveDraftRevision(
+    draftRevision,
+    revision,
+    savedDefinition,
+    JSON.stringify(initial),
+  );
+  const conflict = remote.conflict || saveConflict;
   // Ignore canvas selection and position: they are not part of the saved contract.
   const fingerprint = JSON.stringify({
     name,
@@ -271,22 +286,39 @@ export default function WorkflowStudio({
     setPreview(null);
   }
   async function save() {
-    if (!validation.definition || inputError || !allowSave || saveLock.current)
+    if (
+      !validation.definition ||
+      inputError ||
+      !allowSave ||
+      conflict ||
+      saveLock.current
+    )
       return;
     saveLock.current = true;
     setBusy(true);
     setMessage("");
     try {
-      await post(`/api/automations/${id}/save`, {
+      const response = await post(`/api/automations/${id}/save`, {
         organizationId,
-        revision: draftRevision,
+        revision: remote.revision,
         definition: validation.definition,
       });
+      if (
+        !Number.isInteger(response.result) ||
+        response.result <= remote.revision
+      ) {
+        setSaveConflict(true);
+        throw new Error(
+          "The save response could not be confirmed. Reload the saved draft before editing again.",
+        );
+      }
       setSavedFingerprint(fingerprint);
-      setDraftRevision((value) => value + 1);
+      setDraftRevision(response.result);
+      setSavedDefinition(JSON.stringify(validation.definition));
       setMessage("Draft saved. Review and publish from the workflow card.");
       router.refresh();
     } catch (e) {
+      if (e instanceof ApiError && e.status === 409) setSaveConflict(true);
       setMessage(e instanceof Error ? e.message : "Save failed.");
     } finally {
       saveLock.current = false;
@@ -325,7 +357,13 @@ export default function WorkflowStudio({
         <button
           className="button"
           type="button"
-          disabled={busy || !validation.definition || inputError || !allowSave}
+          disabled={
+            busy ||
+            !validation.definition ||
+            inputError ||
+            !allowSave ||
+            conflict
+          }
           onClick={save}
         >
           <Save size={16} />
@@ -340,6 +378,35 @@ export default function WorkflowStudio({
         {dirty ? "Unsaved changes" : "No unsaved changes"} · Closing the studio
         keeps your edits on this page. Canvas positions are not saved.
       </p>
+      {conflict && (
+        <aside className="setup-note" role="alert">
+          <strong>A newer draft is available.</strong>
+          <p>
+            Your edits are still here. Load the latest saved draft before saving
+            again.
+          </p>
+        </aside>
+      )}
+      {allowSave && onReload && (
+        <button
+          type="button"
+          className="button button-secondary"
+          disabled={busy}
+          onClick={() => {
+            if (
+              dirty &&
+              !window.confirm(
+                "Discard your unsaved changes and load the latest saved draft?",
+              )
+            )
+              return;
+            router.refresh();
+            onReload();
+          }}
+        >
+          Load latest saved draft
+        </button>
+      )}
       <div className="studio-layout">
         <div className="studio-main">
           <div className="studio-trigger">

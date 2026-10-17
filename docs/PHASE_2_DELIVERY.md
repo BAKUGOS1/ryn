@@ -36,7 +36,7 @@ All three Phase 2 trigger variants are implemented in source. The live-provider 
 
 ## Run in a dedicated development environment
 
-1. Review/apply all three ordered migrations (foundation, monitoring, event automations) to that project only.
+1. Review/apply all ordered migrations (foundation, monitoring, event automations and delivery-evidence correction) to that project only, with owner approval.
 2. Set the app's three foundation variables plus the server-only values in `.env.example`. `SUPABASE_SECRET_KEY` is a Supabase secret/service-role key and must NEVER have a `NEXT_PUBLIC_` prefix.
 3. Keep `private` out of the Data API schemas. Never grant authenticated clients worker RPC execution. Run DB advisors.
 4. Configure an exact allowlist of owned test hosts, a verified Resend sender and a controlled team inbox. Leave `MONITORING_ENABLED=false` until account/egress approval and test setup are complete.
