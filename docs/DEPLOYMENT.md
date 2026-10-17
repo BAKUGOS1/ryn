@@ -1,4 +1,6 @@
-# FutureFlow deployment handoff
+# Ryn deployment handoff
+
+Current brand: **Ryn**. Assigned new public domain: https://ryn-workflows.vercel.app/. See `BRANDING.md` for rename state, compatibility identifiers and the latest verification. Older deployment receipts below retain their original source/URL evidence.
 
 ## Current state
 
@@ -14,12 +16,12 @@ Post-deployment verification: Node fetch returned 200 for home, guide, use cases
 
 Authentication, actual workflow execution and real email delivery remain deferred until backend setup. A hosted public demo is not production acceptance of the connected SaaS.
 
-Last fully verified application commit: `1a6963152b8e635338f8299a5043d2649bcc6a1a`. GitHub Actions [39032630115](https://github.com/BAKUGOS1/futureflow/actions/runs/39032630115) passed 150 automated tests, 5 HTTP checks and 10 public desktop/390px browser checks, plus formatting, lint, typecheck, disposable seed and production build. The deployment-config/documentation checkpoint after it does not change application behavior.
+Last fully verified application commit: `1a6963152b8e635338f8299a5043d2649bcc6a1a`. GitHub Actions [39032630115](https://github.com/BAKUGOS1/ryn/actions/runs/39032630115) passed 150 automated tests, 5 HTTP checks and 10 public desktop/390px browser checks, plus formatting, lint, typecheck, disposable seed and production build. The deployment-config/documentation checkpoint after it does not change application behavior.
 
 ## Deploy the public demo first
 
 1. Reconnect Vercel in ChatGPT Apps, or open your own Vercel dashboard.
-2. Create/select a dedicated **FutureFlow** project. Import `BAKUGOS1/futureflow`; use the repository root, **Next.js**, **Node.js 24.x**, and the package-manager version pinned in `package.json`. `vercel.json` supplies the frozen-lockfile install and production build commands.
+2. Create/select a dedicated **Ryn** project. Import `BAKUGOS1/ryn`; use the repository root, **Next.js**, **Node.js 24.x**, and the package-manager version pinned in `package.json`. `vercel.json` supplies the frozen-lockfile install and production build commands.
 3. Select **`phase-2/website-monitor`** as the source branch and inspect the commit before deploying. `main` currently contains only the older foundation. A normal import may default to `main`; change the deployment branch explicitly. No merge is needed for a branch preview.
 4. Keep the following flags disabled. Leave unconfigured Supabase and worker credentials absent rather than copying placeholders from `.env.example`.
 

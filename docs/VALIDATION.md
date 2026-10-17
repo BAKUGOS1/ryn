@@ -58,7 +58,7 @@ Use a dedicated development Supabase project and two real verified accounts:
 
 ## Webhook/deadline and initial editor extension — 17 October 2026
 
-This section supersedes earlier scope statements for the feature branch. The previous monitor commit passed GitHub Actions run [39007861188](https://github.com/BAKUGOS1/futureflow/actions/runs/39007861188), including all four HTTP smoke checks that were locally network-blocked.
+This section supersedes earlier scope statements for the feature branch. The previous monitor commit passed GitHub Actions run [39007861188](https://github.com/BAKUGOS1/ryn/actions/runs/39007861188), including all four HTTP smoke checks that were locally network-blocked.
 
 Current extension: **116 local tests pass across 11 files**, including 30 new graph/crypto/intake/SQL/editor-contract tests. Strict typecheck, ESLint, formatting, disposable seed and production build passed. Registry production audit after adding React Flow reports 0 advisories. This does not certify the application as vulnerability-free.
 
@@ -67,3 +67,9 @@ New coverage includes signature/body/ID/timestamp tampering, replay/conflict han
 Added CI browser checks run the public local-only editor sample on desktop and 390px: keyboard opening, invalid graph recovery, typed condition editing, sample simulation, disabled saving, no API mutations and overflow. Read the draft PR's latest check/run for authoritative executed browser results. The initial run caught an ambiguous Comparison label; the control now has an explicit accessible name. A local supervised development preview rendered the new page, but its client interaction did not activate in the cloud browser, so that inspection is not counted as a successful editor test.
 
 Hosted authentication/authoring, real Supabase PostgREST, live Inngest/Resend, multi-connection contention/load, egress restrictions and beta-user acceptance remain open. No hosted schema, deployment, live billing or real provider send was performed.
+
+## Ryn rename verification — 2026-10-17
+
+151 automated tests across 15 files passed, including Ryn signed-header intake and legacy-header verification. All five ordered migrations passed the disposable seed and SQL suite; future notification wording is Ryn. Lint, strict typecheck and formatting passed. The first local production build hit a stale Turbopack persistence-cache error; deleting only generated `.next` output and rebuilding passed. All 5 HTTP checks passed against that production build. Local desktop/mobile browser tests could not launch because Chromium headless-shell is absent; their 10 launch failures are infrastructure failures, not passing checks. CI browser results must be inspected separately.
+
+Vercel project renamed in place to `ryn`; `ryn-workflows.vercel.app` assigned and verified, APP_ORIGIN updated. Exact requested `ryn.vercel.app` is owned by another team. GitHub repository rename was initially blocked by authentication; after owner sign-in, the repository was renamed in place to `BAKUGOS1/ryn`, and its description and website were updated. The original repository, history and PR are preserved. Original master plan and applied migrations remain unchanged; stable integration identifiers are documented in `BRANDING.md`. Backend, indexing and billing remain disabled.

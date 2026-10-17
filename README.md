@@ -1,4 +1,6 @@
-# FutureFlow — Phase 1 foundation + Phase 2 monitoring slice
+# Ryn — Phase 1 foundation + Phase 2 monitoring slice
+
+**Product name: Ryn** (formerly FutureFlow). Public demo: https://ryn-workflows.vercel.app/. Repository: https://github.com/BAKUGOS1/ryn. The existing feature branch and draft PR remain the source. See `docs/BRANDING.md`.
 
 A Next.js / Supabase foundation for an India-first automation SaaS. This branch adds the first monitoring vertical slice to the foundation. Webhook/deadline variants, graph editing and payments remain backlog. The supplied final plan remains authoritative; implementation decisions and deviations are in `docs/`.
 

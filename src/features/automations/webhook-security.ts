@@ -94,15 +94,27 @@ export function signature(
     .update(body)
     .digest("hex");
 }
+// Keep the encrypted-envelope AAD above stable across the product rename.
+// Never mix header families: all three Ryn headers must be supplied together.
+export function webhookHeaders(headers: Headers) {
+  const prefix = ["timestamp", "event-id", "signature"].some((name) =>
+    headers.has("x-ryn-" + name),
+  )
+    ? "x-ryn-"
+    : "x-futureflow-";
+  return {
+    timestamp: headers.get(prefix + "timestamp") ?? "",
+    eventId: headers.get(prefix + "event-id") ?? "",
+    supplied: headers.get(prefix + "signature") ?? "",
+  };
+}
 export function verifySignature(
   secret: string,
   headers: Headers,
   body: Uint8Array,
   now = Date.now(),
 ) {
-  const timestamp = headers.get("x-futureflow-timestamp") ?? "";
-  const eventId = headers.get("x-futureflow-event-id") ?? "";
-  const supplied = headers.get("x-futureflow-signature") ?? "";
+  const { timestamp, eventId, supplied } = webhookHeaders(headers);
   if (
     !/^\d{10}$/.test(timestamp) ||
     !/^[a-zA-Z0-9_-]{1,100}$/.test(eventId) ||

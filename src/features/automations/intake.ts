@@ -5,6 +5,7 @@ import { definitionSchema, normalizeEvent } from "./schema";
 import {
   decryptSecret,
   verifySignature,
+  webhookHeaders,
   type Keyring,
 } from "./webhook-security";
 import type { Rpc } from "@/features/monitoring/repository";
@@ -77,7 +78,7 @@ export async function receiveWebhook(
     p_source: sourceId,
     p_revision: source.data.revision,
     p_version: source.data.version_id,
-    p_event_key: request.headers.get("x-futureflow-event-id"),
+    p_event_key: webhookHeaders(request.headers).eventId,
     p_body_hash: createHash("sha256").update(bytes).digest("hex"),
     p_fields: fields,
   });

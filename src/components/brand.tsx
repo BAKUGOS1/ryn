@@ -5,7 +5,7 @@ export function Brand() {
       <span className="brand-icon">
         <Workflow size={21} aria-hidden="true" />
       </span>
-      futureflow<span className="brand-dot">.</span>
+      ryn<span className="brand-dot">.</span>
     </span>
   );
 }

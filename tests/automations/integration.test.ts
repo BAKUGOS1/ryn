@@ -86,9 +86,9 @@ function request(
     body: bytes,
     headers: {
       "content-type": "application/json",
-      "x-futureflow-timestamp": ts,
-      "x-futureflow-event-id": eventId,
-      "x-futureflow-signature": "v1=" + signature(key, ts, eventId, bytes),
+      "x-ryn-timestamp": ts,
+      "x-ryn-event-id": eventId,
+      "x-ryn-signature": "v1=" + signature(key, ts, eventId, bytes),
     },
   });
 }
@@ -189,7 +189,7 @@ it("keeps accepted events pinned to immutable published versions while drafts ch
   await processWorkflowEvent(h.rpc, ctx.a, event.id as string);
   expect((await rows("workflow_runs"))[0].version_id).toBe(w.version);
   expect((await rows("monitor_deliveries"))[0].subject).toBe(
-    "FutureFlow: Priority alert",
+    "Ryn: Priority alert",
   );
   await expect(
     h.admin("update public.workflow_versions set definition='{}'"),

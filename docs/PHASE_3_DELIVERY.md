@@ -1,6 +1,6 @@
 # Visual workflow authoring
 
-React Flow 12.12.0 powers the lazy-loaded canvas; custom FutureFlow nodes and inspector use the same strict schema as webhook/deadline workers. Canvas positions are presentation-only and re-arranged on reopen; they are not currently persisted. Compilation strips all React Flow state and revalidates the domain graph. No second engine, expressions or arbitrary provider actions are introduced.
+React Flow 12.12.0 powers the lazy-loaded canvas; custom Ryn nodes and inspector use the same strict schema as webhook/deadline workers. Canvas positions are presentation-only and re-arranged on reopen; they are not currently persisted. Compilation strips all React Flow state and revalidates the domain graph. No second engine, expressions or arbitrary provider actions are introduced.
 
 Implemented: node palette, condition/action inspector, true/false/success handles, keyboard/mobile connection forms, remove-step/connection controls, optimistic draft save, immutable publication controls, saved JSON fallback, run step timelines, empty states and local sample simulation. Existing create forms provide signed-event and deadline notification templates. Monitor incident center remains in Monitors. Viewing history requires membership; authoring and publish actions require editor/admin/owner; webhook setup/rotation requires owner/admin.
 

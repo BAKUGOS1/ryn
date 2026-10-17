@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 export const publicPaths = ["/", "/use-cases", "/docs", "/security"] as const;
 export const siteDescription =
-  "FutureFlow helps small teams monitor websites, route signed webhook events and track deadlines with traceable automation workflows.";
+  "Ryn helps small teams monitor websites, route signed webhook events and track deadlines with traceable automation workflows.";
 export function siteConfig(
   env: Record<string, string | undefined> = process.env,
 ) {
@@ -45,7 +45,7 @@ export function publicMetadata(
     openGraph: {
       title,
       description,
-      siteName: "FutureFlow",
+      siteName: "Ryn",
       type: "website",
       locale: "en_IN",
       ...(origin ? { url: origin + path } : {}),

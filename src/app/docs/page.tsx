@@ -3,7 +3,7 @@ import { PublicShell } from "@/components/public-shell";
 import { publicMetadata } from "@/lib/seo";
 export const metadata = publicMetadata(
   "/docs",
-  "Get started with FutureFlow | FutureFlow",
+  "Get started with Ryn | Ryn",
   "A short guide to choosing, testing and reviewing your first automation.",
 );
 const sections = [
@@ -36,8 +36,8 @@ export default function Page() {
   return (
     <PublicShell>
       <article className="public-article">
-        <span className="eyebrow">FUTUREFLOW · DOCS</span>
-        <h1>Get started with FutureFlow</h1>
+        <span className="eyebrow">RYN · DOCS</span>
+        <h1>Get started with Ryn</h1>
         <p className="lede">
           A short guide to choosing, testing and reviewing your first
           automation.

@@ -31,9 +31,9 @@ test("public guide and sample workflow form a clear mobile-safe journey", async 
 }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
-  await page.getByText("What is FutureFlow?", { exact: true }).click();
+  await page.getByText("What is Ryn?", { exact: true }).click();
   await expect(
-    page.getByText("FutureFlow helps small teams", { exact: false }),
+    page.getByText("Ryn helps small teams", { exact: false }),
   ).toBeVisible();
   expect(
     await page.evaluate(
@@ -42,7 +42,7 @@ test("public guide and sample workflow form a clear mobile-safe journey", async 
   ).toBe(true);
   await page.getByRole("link", { name: "See how it works" }).click();
   await expect(
-    page.getByRole("heading", { name: "Get started with FutureFlow" }),
+    page.getByRole("heading", { name: "Get started with Ryn" }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Try the sample editor" }).click();
   await page.getByRole("button", { name: "Open visual editor" }).click();

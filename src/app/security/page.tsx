@@ -3,8 +3,8 @@ import { PublicShell } from "@/components/public-shell";
 import { publicMetadata } from "@/lib/seo";
 export const metadata = publicMetadata(
   "/security",
-  "Security, with clear boundaries. | FutureFlow",
-  "How FutureFlow separates workspaces, verifies events and limits automation side effects.",
+  "Security, with clear boundaries. | Ryn",
+  "How Ryn separates workspaces, verifies events and limits automation side effects.",
 );
 const sections = [
   [
@@ -25,18 +25,18 @@ const sections = [
   ],
   [
     "Report a concern",
-    "The source repository is BAKUGOS1/futureflow on GitHub. Use its private vulnerability reporting option if available. Do not post secrets, personal data or exploitable details in a public issue. A dedicated security contact must be established before launch.",
+    "The source repository is BAKUGOS1/ryn on GitHub. Use its private vulnerability reporting option if available. Do not post secrets, personal data or exploitable details in a public issue. A dedicated security contact must be established before launch.",
   ],
 ];
 export default function Page() {
   return (
     <PublicShell>
       <article className="public-article">
-        <span className="eyebrow">FUTUREFLOW · SECURITY</span>
+        <span className="eyebrow">RYN · SECURITY</span>
         <h1>Security, with clear boundaries.</h1>
         <p className="lede">
-          How FutureFlow separates workspaces, verifies events and limits
-          automation side effects.
+          How Ryn separates workspaces, verifies events and limits automation
+          side effects.
         </p>
         {sections.map(([heading, body]) => (
           <section className="public-section" key={heading}>

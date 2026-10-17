@@ -10,11 +10,11 @@ import {
 } from "@/lib/seo";
 export const metadata = publicMetadata(
   "/",
-  "Website monitoring & event automation | FutureFlow",
+  "Website monitoring & event automation | Ryn",
   siteDescription,
 );
 const questions = [
-  ["What is FutureFlow?", siteDescription],
+  ["What is Ryn?", siteDescription],
   [
     "Which workflows can I build?",
     "Start with website incident alerts, signed webhook conditions or one-time deadline reminders. The visual editor supports webhook and deadline workflows; website monitors use a focused setup form.",
@@ -24,8 +24,8 @@ const questions = [
     "No. The public demo uses sample data and local simulation. It does not save workflows, send messages or connect to your services.",
   ],
   [
-    "Is FutureFlow ready for live operations?",
-    "FutureFlow is in development. Connected authentication, background jobs and email delivery require setup and end-to-end verification before live use. Paid plans are not available yet.",
+    "Is Ryn ready for live operations?",
+    "Ryn is in development. Connected authentication, background jobs and email delivery require setup and end-to-end verification before live use. Paid plans are not available yet.",
   ],
 ];
 export default function Home() {
@@ -39,7 +39,7 @@ export default function Home() {
             __html: serializeJsonLd({
               "@context": "https://schema.org",
               "@type": "SoftwareApplication",
-              name: "FutureFlow",
+              name: "Ryn",
               url: origin,
               description: siteDescription,
               applicationCategory: "BusinessApplication",

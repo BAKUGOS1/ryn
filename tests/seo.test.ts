@@ -17,35 +17,35 @@ it.each([
   ).toBe(false);
 });
 it("requires explicit launch opt-in and excludes Vercel previews", () => {
-  expect(
-    siteConfig({ APP_ORIGIN: "https://futureflow.example" }).indexable,
-  ).toBe(false);
+  expect(siteConfig({ APP_ORIGIN: "https://ryn.example" }).indexable).toBe(
+    false,
+  );
   expect(
     siteConfig({
-      APP_ORIGIN: "https://futureflow.example",
+      APP_ORIGIN: "https://ryn.example",
       SITE_INDEXING_ENABLED: "true",
       VERCEL_ENV: "preview",
     }).indexable,
   ).toBe(false);
 });
 it("publishes only canonical public routes when launch is enabled", () => {
-  vi.stubEnv("APP_ORIGIN", "https://futureflow.example");
+  vi.stubEnv("APP_ORIGIN", "https://ryn.example");
   vi.stubEnv("SITE_INDEXING_ENABLED", "true");
   vi.stubEnv("VERCEL_ENV", "production");
   expect(sitemap().map((entry) => entry.url)).toEqual([
-    "https://futureflow.example/",
-    "https://futureflow.example/use-cases",
-    "https://futureflow.example/docs",
-    "https://futureflow.example/security",
+    "https://ryn.example/",
+    "https://ryn.example/use-cases",
+    "https://ryn.example/docs",
+    "https://ryn.example/security",
   ]);
   expect(publicMetadata("/docs", "Guide", "Help").robots).toEqual({
     index: true,
     follow: true,
   });
   expect(publicMetadata("/docs", "Guide", "Help").alternates?.canonical).toBe(
-    "https://futureflow.example/docs",
+    "https://ryn.example/docs",
   );
-  expect(robots().sitemap).toBe("https://futureflow.example/sitemap.xml");
+  expect(robots().sitemap).toBe("https://ryn.example/sitemap.xml");
 });
 it("omits sitemap entries and blocks crawling before launch", () => {
   vi.stubEnv("SITE_INDEXING_ENABLED", "false");

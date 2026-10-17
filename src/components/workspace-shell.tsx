@@ -118,7 +118,7 @@ export function WorkspaceShell({
           {children}
         </main>
         <footer className="workspace-footer">
-          BUILT FOR WHAT’S NEXT <span>FutureFlow · Phase 1</span>
+          BUILT FOR WHAT’S NEXT <span>Ryn · Phase 1</span>
         </footer>
       </div>
     </div>

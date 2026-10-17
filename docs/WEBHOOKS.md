@@ -4,12 +4,14 @@ The endpoint is `POST /api/events/webhook/{sourceId}`. An owner/admin creates th
 
 Required headers:
 
-| Header                 | Value                                                                 |
-| ---------------------- | --------------------------------------------------------------------- |
-| Content-Type           | application/json                                                      |
-| X-FutureFlow-Timestamp | Unix seconds, 10 digits, within 300 seconds of server time            |
-| X-FutureFlow-Event-Id  | Stable logical event ID, 1–100 ASCII letters/digits/underscore/hyphen |
-| X-FutureFlow-Signature | `v1=` followed by lowercase hex HMAC-SHA256                           |
+| Header          | Value                                                                 |
+| --------------- | --------------------------------------------------------------------- |
+| Content-Type    | application/json                                                      |
+| X-Ryn-Timestamp | Unix seconds, 10 digits, within 300 seconds of server time            |
+| X-Ryn-Event-Id  | Stable logical event ID, 1–100 ASCII letters/digits/underscore/hyphen |
+| X-Ryn-Signature | `v1=` followed by lowercase hex HMAC-SHA256                           |
+
+The original `X-FutureFlow-*` header family remains accepted for existing senders. Supply one complete family; partial Ryn headers never fall back to legacy values. When both complete families are present, Ryn headers take precedence. The signature algorithm and encryption binding are unchanged.
 
 Sign the UTF-8 bytes of `timestamp + "." + eventId + "."`, followed by the exact request body bytes. Use the displayed secret as a UTF-8 string, not hex-decoded bytes. Whitespace changes alter the signature. An event ID always represents the same body; use a new ID for a new event. Retries may sign a fresh timestamp while retaining the original ID and body.
 
@@ -20,7 +22,7 @@ import { createHmac } from "node:crypto";
 const timestamp = String(Math.floor(Date.now() / 1000));
 const eventId = "ticket_1042";
 const body = JSON.stringify({ priority: "critical" });
-const signature = createHmac("sha256", process.env.FUTUREFLOW_SIGNING_SECRET)
+const signature = createHmac("sha256", process.env.RYN_SIGNING_SECRET)
   .update(timestamp + "." + eventId + ".")
   .update(body)
   .digest("hex");

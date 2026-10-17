@@ -71,3 +71,19 @@ it("authenticates exact bytes, timestamp and id within a bounded replay window",
   headers.set("x-futureflow-signature", "v1=bad");
   expect(verifySignature("secret", headers, bytes, now)).toBe(false);
 });
+
+it("accepts Ryn headers and rejects mixed or incomplete header families", () => {
+  const bytes = Buffer.from("{}");
+  const timestamp = "1792230000";
+  const now = Number(timestamp) * 1000;
+  const headers = new Headers({
+    "x-ryn-timestamp": timestamp,
+    "x-ryn-event-id": "ryn_event",
+    "x-ryn-signature":
+      "v1=" + signature("secret", timestamp, "ryn_event", bytes),
+  });
+  expect(verifySignature("secret", headers, bytes, now)).toBe(true);
+  headers.set("x-futureflow-signature", headers.get("x-ryn-signature")!);
+  headers.delete("x-ryn-signature");
+  expect(verifySignature("secret", headers, bytes, now)).toBe(false);
+});

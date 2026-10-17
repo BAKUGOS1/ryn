@@ -3,7 +3,7 @@ import "./globals.css";
 import { siteConfig } from "@/lib/seo";
 export const metadata: Metadata = {
   metadataBase: siteConfig().origin ? new URL(siteConfig().origin!) : undefined,
-  title: "FutureFlow — Reliable by design",
+  title: "Ryn — Reliable by design",
   description: "A calm workspace for reliable, accountable automation.",
   robots: { index: false, follow: false },
 };

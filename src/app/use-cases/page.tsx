@@ -3,7 +3,7 @@ import { PublicShell } from "@/components/public-shell";
 import { publicMetadata } from "@/lib/seo";
 export const metadata = publicMetadata(
   "/use-cases",
-  "Three signals. Clear next steps. | FutureFlow",
+  "Three signals. Clear next steps. | Ryn",
   "Website alerts, signed webhook routing and one-time deadline reminders for small teams.",
 );
 const sections = [
@@ -21,14 +21,14 @@ const sections = [
   ],
   [
     "A deliberate scope",
-    "FutureFlow focuses on these three triggers, typed conditions and bounded actions. It does not run arbitrary scripts or offer hundreds of connectors. Live use requires connected and verified providers; the public demo is local simulation.",
+    "Ryn focuses on these three triggers, typed conditions and bounded actions. It does not run arbitrary scripts or offer hundreds of connectors. Live use requires connected and verified providers; the public demo is local simulation.",
   ],
 ];
 export default function Page() {
   return (
     <PublicShell>
       <article className="public-article">
-        <span className="eyebrow">FUTUREFLOW · USE-CASES</span>
+        <span className="eyebrow">RYN · USE-CASES</span>
         <h1>Three signals. Clear next steps.</h1>
         <p className="lede">
           Website alerts, signed webhook routing and one-time deadline reminders

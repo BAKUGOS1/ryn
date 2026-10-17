@@ -90,7 +90,7 @@ export const httpsWire: Wire = ({
           callback(null, address, family);
         },
         headers: {
-          "User-Agent": "FutureFlow-Monitor/1",
+          "User-Agent": "Ryn-Monitor/1",
           Accept: "*/*",
           "Accept-Encoding": "identity",
         },

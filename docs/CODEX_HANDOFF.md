@@ -1,6 +1,8 @@
-# FutureFlow continuation
+# Ryn continuation
 
-Repository: https://github.com/BAKUGOS1/futureflow
+Current brand: **Ryn**. Assigned new public domain: https://ryn-workflows.vercel.app/. See `BRANDING.md` for rename state, compatibility identifiers and the latest verification. Older deployment receipts below retain their original source/URL evidence.
+
+Repository: https://github.com/BAKUGOS1/ryn
 Working branch: `phase-2/website-monitor`; draft PR #1. Foundation is on `main`. Keep changes on the feature branch until review. Do not merge/protected-push, deploy, apply hosted migrations, send real notifications or activate live billing without the owner's approval.
 
 Read `FUTUREFLOW_FINAL_MASTER.md` in full, especially Section 17. It remains the product source of truth. Start from the current branch, not a new scaffold. Current architecture: Next.js + React + Supabase SSR/RLS, guarded database RPCs, Postgres durable records/outboxes, signed Inngest execution and Resend adapter. No unrelated connected Supabase project was modified.

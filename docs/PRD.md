@@ -1,6 +1,6 @@
 # Product requirements — implemented slice
 
-FutureFlow: Detect → Evaluate → Decide → Execute → Verify. Initial users: developers, agencies and small SaaS teams. The final master plan is the complete product brief.
+Ryn: Detect → Evaluate → Decide → Execute → Verify. Initial users: developers, agencies and small SaaS teams. The final master plan is the complete product brief.
 
 Phase 1 delivers identity, tenant boundaries and a usable team workspace. A verified user creates an organization, can switch organizations, administer permitted roles, share a single-use invitation and edit settings. Members cannot see other tenants. Owner cannot be demoted or suspended through app operations. Archive is logical deletion, not physical purge.
 

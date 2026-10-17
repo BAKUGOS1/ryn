@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-export const alt = "FutureFlow — Website monitoring and event automation";
+export const alt = "Ryn — Website monitoring and event automation";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export default function Image() {
@@ -17,7 +17,7 @@ export default function Image() {
         fontFamily: "sans-serif",
       }}
     >
-      <div style={{ fontSize: 30, marginBottom: 48 }}>futureflow.</div>
+      <div style={{ fontSize: 30, marginBottom: 48 }}>ryn.</div>
       <div style={{ fontSize: 76, fontWeight: 700 }}>Less watching.</div>
       <div style={{ fontSize: 76, color: "#4c7860" }}>More moving forward.</div>
       <div style={{ fontSize: 27, marginTop: 40 }}>
