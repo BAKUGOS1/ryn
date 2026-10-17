@@ -13,6 +13,7 @@ export default async function AuthPage({
   const { mode } = await params;
   if (!["login", "signup", "reset", "update"].includes(mode)) notFound();
   const m = mode as "login" | "signup" | "reset" | "update";
+  const error = (await searchParams).error;
   return (
     <div className="auth-page">
       <Link href="/">
@@ -31,9 +32,11 @@ export default async function AuthPage({
           }
         </h1>
         <p className="muted">One account. A clear space for every team.</p>
-        {(await searchParams).error && (
+        {error && (
           <p role="alert">
-            The confirmation link could not be verified. Request a new link.
+            {error === "google"
+              ? "Google sign-in could not be started. Please try again."
+              : "Sign-in could not be verified. Please try again or request a new link."}
           </p>
         )}
         {readEnv() ? (
