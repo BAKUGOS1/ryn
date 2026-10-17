@@ -1,5 +1,6 @@
 import { AutomationPanel } from "@/components/automation-panel";
 import { MonitoringPanel } from "@/components/monitoring-panel";
+import { WorkspaceGuide } from "@/components/workspace-guide";
 import { notFound, redirect } from "next/navigation";
 import { authorize } from "@/lib/auth";
 import { readEnv } from "@/lib/env";
@@ -182,6 +183,7 @@ export default async function Workspace({
             )}
             <p className="quiet">Workspace address: {org.slug}</p>
           </section>
+          <WorkspaceGuide organizationId={id} />
           {role === "owner" && (
             <section className="panel settings-panel danger-panel">
               <h2>Archive workspace</h2>

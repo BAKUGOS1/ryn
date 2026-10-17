@@ -828,6 +828,35 @@ input::placeholder {
 .danger-panel {
   border-color: #e0c9c3;
 }
+.workspace-guide > p {
+  margin: 14px 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.workspace-guide details {
+  border-top: 1px solid var(--border, #dce3df);
+  padding: 18px 0;
+}
+.workspace-guide details:first-of-type {
+  margin-top: 22px;
+}
+.workspace-guide summary {
+  cursor: pointer;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.workspace-guide details p,
+.workspace-guide li {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-top: 12px;
+  overflow-wrap: anywhere;
+}
+.workspace-guide ol,
+.workspace-guide ul {
+  padding-left: 22px;
+}
 .danger-panel p {
   color: #87675e;
   font-size: 12px;
