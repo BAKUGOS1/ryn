@@ -3,6 +3,16 @@ const config: NextConfig = {
   poweredByHeader: false,
   async headers() {
     return [
+      ...[
+        "/app/:path*",
+        "/api/:path*",
+        "/auth/:path*",
+        "/invite",
+        "/preview",
+      ].map((source) => ({
+        source,
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      })),
       {
         source: "/:path*",
         headers: [

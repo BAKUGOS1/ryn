@@ -60,3 +60,44 @@ test("edits and simulates the shared workflow contract without external effects"
     ),
   ).toBe(true);
 });
+
+test("keeps edits when collapsed and invalidates outdated simulation", async ({
+  page,
+}) => {
+  await page.goto("/preview?tab=studio");
+  await page.getByRole("button", { name: "Open visual editor" }).click();
+  await page
+    .getByText("Test safely with a sample event", { exact: true })
+    .click();
+  await page.getByRole("button", { name: "Simulate draft" }).click();
+  await expect(
+    page.getByText("Action path reached", { exact: true }),
+  ).toBeVisible();
+  await page.getByLabel("Name", { exact: true }).fill("My edited workflow");
+  await expect(
+    page.getByText("Action path reached", { exact: true }),
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "Close studio" }).click();
+  await page.getByRole("button", { name: "Open visual editor" }).click();
+  await expect(page.getByLabel("Name", { exact: true })).toHaveValue(
+    "My edited workflow",
+  );
+  await page.getByLabel("Expected value as JSON").fill("invalid json");
+  const steps = page.getByLabel("Selected step");
+  const values = await steps
+    .locator("option")
+    .evaluateAll((options) =>
+      options.map((o) => (o as HTMLOptionElement).value),
+    );
+  await steps.selectOption(values[1]);
+  await expect(
+    page.getByRole("button", { name: "Simulate draft" }),
+  ).toBeDisabled();
+  await steps.selectOption(values[0]);
+  await expect(page.getByLabel("Expected value as JSON")).toHaveValue(
+    "invalid json",
+  );
+  page.once("dialog", (dialog) => dialog.dismiss());
+  await page.getByRole("link", { name: "Overview", exact: true }).click();
+  await expect(page).toHaveURL(/tab=studio/);
+});

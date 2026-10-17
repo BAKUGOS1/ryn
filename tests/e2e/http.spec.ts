@@ -31,3 +31,32 @@ test("headers prevent framing and referrer leakage", async ({ request }) => {
     "frame-ancestors 'none'",
   );
 });
+
+test("public pages render metadata and private surfaces stay noindex", async ({
+  request,
+}) => {
+  for (const path of ["/", "/docs", "/security", "/use-cases"]) {
+    const response = await request.get(path);
+    expect(response.status()).toBe(200);
+    expect(await response.text()).toContain('property="og:title"');
+  }
+  for (const path of [
+    "/preview",
+    "/auth/login",
+    "/invite",
+    "/api/organizations",
+  ]) {
+    expect((await request.get(path)).headers()["x-robots-tag"]).toBe(
+      "noindex, nofollow",
+    );
+  }
+  expect(await (await request.get("/robots.txt")).text()).toContain(
+    "Disallow: /",
+  );
+  expect(await (await request.get("/sitemap.xml")).text()).not.toContain(
+    "<loc>",
+  );
+  const image = await request.get("/opengraph-image");
+  expect(image.status()).toBe(200);
+  expect(image.headers()["content-type"]).toContain("image/png");
+});

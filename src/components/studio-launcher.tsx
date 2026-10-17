@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { useState } from "react";
+import { useId, useState } from "react";
 const Studio = dynamic(() => import("./workflow-studio"), {
   ssr: false,
   loading: () => <p role="status">Opening the workflow studio…</p>,
@@ -14,17 +14,25 @@ export function StudioLauncher(props: {
   allowSave?: boolean;
 }) {
   const [open, setOpen] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const regionId = useId();
   return (
     <div className="studio-launcher">
       <button
         className="button button-secondary"
         type="button"
-        onClick={() => setOpen(!open)}
+        onClick={() => {
+          setLoaded(true);
+          setOpen(!open);
+        }}
+        aria-controls={regionId}
         aria-expanded={open}
       >
         {open ? "Close studio" : "Open visual editor"}
       </button>
-      {open && <Studio {...props} />}
+      <div id={regionId} hidden={!open}>
+        {loaded && <Studio {...props} />}
+      </div>
     </div>
   );
 }

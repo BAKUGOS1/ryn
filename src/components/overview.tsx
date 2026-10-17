@@ -27,7 +27,8 @@ export function Overview({
           <span className="eyebrow">A LITTLE CLARITY GOES A LONG WAY</span>
           <h1>Your workspace, in focus.</h1>
           <p className="muted">
-            Welcome to {name}. Let’s put the right foundation in place.
+            Welcome to {name}. Choose a signal, test a workflow and review its
+            results.
           </p>
         </div>
         <Link
@@ -49,20 +50,19 @@ export function Overview({
             <span className="dot" /> START WITH CONFIDENCE
           </span>
           <h2>
-            Good automation starts
-            <br />
-            with a great workspace.
+            One useful workflow.
+            <br />A clear place to start.
           </h2>
           <p>
-            Bring your people together. Give everyone the right access.
-            <br className="desktop-only" /> Then build something that keeps
-            moving.
+            Start with a website alert, an important event or a deadline.
+            <br className="desktop-only" /> Test the path before putting it to
+            work.
           </p>
           <Link
-            href={preview ? "/auth/signup" : `/app/${orgId}/members`}
+            href={preview ? "/preview?tab=studio" : `/app/${orgId}/automations`}
             className="button button-lime"
           >
-            {preview ? "Create a workspace" : "Invite your team"}{" "}
+            {preview ? "Try a sample workflow" : "Build a workflow"}{" "}
             <ArrowUpRight size={17} />
           </Link>
         </div>
@@ -161,9 +161,10 @@ export function Overview({
           </p>
           <Link
             className="button button-secondary"
-            href={preview ? "/preview?tab=studio" : `/app/${orgId}/automations`}
+            href={preview ? "/docs" : `/app/${orgId}/monitors`}
           >
-            Build a workflow <ArrowRight size={16} />
+            {preview ? "Read the setup guide" : "Set up a monitor"}{" "}
+            <ArrowRight size={16} />
           </Link>
         </section>
       </div>

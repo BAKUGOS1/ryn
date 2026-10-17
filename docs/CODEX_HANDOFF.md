@@ -17,3 +17,5 @@ Next work in order:
 6. Phase 5: bounded supported-only AI drafts (never publish/execute), AI metering, telemetry/load/security review and actual backup/restore drills. Phase 6 requires real pilot users, observed economics and staged launch approval.
 
 Commands: `pnpm install --frozen-lockfile`, `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm db:seed`, `pnpm build`; start on port 4173, then `pnpm test:e2e` and `pnpm test:browser` (install Chromium). No real secret belongs in git or chat. `.env.example` documents disabled-by-default settings.
+
+Latest optimization pass: see `OPTIMIZATION.md` for public discovery pages, indexing launch gate and editor safeguards. Billing remains deferred at the owner's request. Keep `SITE_INDEXING_ENABLED=false` until approved launch with the final APP_ORIGIN; rebuild after changing these values. The latest PR checks are authoritative for browser results.

@@ -1,5 +1,5 @@
 "use client";
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import {
   ReactFlow,
@@ -121,11 +121,77 @@ export default function WorkflowStudio({
   const [selected, setSelected] = useState(initial.nodes[0]?.id ?? "");
   const [message, setMessage] = useState("");
   const [busy, setBusy] = useState(false);
-  const [inputError, setInputError] = useState(false);
-  const [sample, setSample] = useState('{"priority":"critical"}');
-  const [preview, setPreview] = useState<ReturnType<typeof evaluate> | null>(
-    null,
+  const [invalidValues, setInvalidValues] = useState<Record<string, string>>(
+    {},
   );
+  const inputError = nodes.some(
+    (n) =>
+      n.data.node.type === "condition" &&
+      n.data.node.config.operator !== "is_null" &&
+      n.id in invalidValues,
+  );
+  const saveLock = useRef(false);
+  const [draftRevision, setDraftRevision] = useState(revision);
+  // Ignore canvas selection and position: they are not part of the saved contract.
+  const fingerprint = JSON.stringify({
+    name,
+    trigger,
+    nodes: nodes.map((n) => n.data.node),
+    edges: edges.map((e) => [e.source, e.target, e.sourceHandle]),
+  });
+  const [savedFingerprint, setSavedFingerprint] = useState(fingerprint);
+  const dirty = fingerprint !== savedFingerprint || inputError;
+  useEffect(() => {
+    if (!dirty) return;
+    const unload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    const navigate = (event: MouseEvent) => {
+      const link =
+        event.target instanceof Element
+          ? event.target.closest("a[href]")
+          : null;
+      if (
+        !(link instanceof HTMLAnchorElement) ||
+        link.target === "_blank" ||
+        event.ctrlKey ||
+        event.metaKey ||
+        event.shiftKey ||
+        event.altKey ||
+        event.button !== 0
+      )
+        return;
+      const url = new URL(link.href);
+      if (url.pathname === location.pathname && url.search === location.search)
+        return;
+      if (
+        !window.confirm(
+          "Leave this page and discard your unsaved workflow changes?",
+        )
+      ) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+    window.addEventListener("beforeunload", unload);
+    document.addEventListener("click", navigate, true);
+    return () => {
+      window.removeEventListener("beforeunload", unload);
+      document.removeEventListener("click", navigate, true);
+    };
+  }, [dirty]);
+  const [sample, setSample] = useState('{"priority":"critical"}');
+  const [simulation, setSimulation] = useState<{
+    fingerprint: string;
+    result: ReturnType<typeof evaluate>;
+  } | null>(null);
+  const preview =
+    !inputError && simulation?.fingerprint === fingerprint
+      ? simulation.result
+      : null;
+  const setPreview = (result: ReturnType<typeof evaluate> | null) =>
+    setSimulation(result ? { fingerprint, result } : null);
   const [source, setSource] = useState("");
   const [target, setTarget] = useState("");
   const [branch, setBranch] = useState("true");
@@ -152,7 +218,7 @@ export default function WorkflowStudio({
   }, [name, trigger, nodes, edges]);
   const connect = useCallback(
     (connection: Connection) => {
-      setPreview(null);
+      setSimulation(null);
       setEdges((es) =>
         addEdge({ ...connection, label: connection.sourceHandle }, es),
       );
@@ -205,20 +271,25 @@ export default function WorkflowStudio({
     setPreview(null);
   }
   async function save() {
-    if (!validation.definition || inputError || !allowSave) return;
+    if (!validation.definition || inputError || !allowSave || saveLock.current)
+      return;
+    saveLock.current = true;
     setBusy(true);
     setMessage("");
     try {
       await post(`/api/automations/${id}/save`, {
         organizationId,
-        revision,
+        revision: draftRevision,
         definition: validation.definition,
       });
+      setSavedFingerprint(fingerprint);
+      setDraftRevision((value) => value + 1);
       setMessage("Draft saved. Review and publish from the workflow card.");
       router.refresh();
     } catch (e) {
       setMessage(e instanceof Error ? e.message : "Save failed.");
     } finally {
+      saveLock.current = false;
       setBusy(false);
     }
   }
@@ -265,6 +336,10 @@ export default function WorkflowStudio({
               : "Save draft"}
         </button>
       </div>
+      <p className="quiet" role="status">
+        {dirty ? "Unsaved changes" : "No unsaved changes"} · Closing the studio
+        keeps your edits on this page. Canvas positions are not saved.
+      </p>
       <div className="studio-layout">
         <div className="studio-main">
           <div className="studio-trigger">
@@ -288,7 +363,6 @@ export default function WorkflowStudio({
               onConnect={connect}
               onNodeClick={(_, node) => {
                 setSelected(node.id);
-                setInputError(false);
               }}
               fitView
               minZoom={0.35}
@@ -398,7 +472,6 @@ export default function WorkflowStudio({
               value={selected}
               onChange={(e) => {
                 setSelected(e.target.value);
-                setInputError(false);
               }}
             >
               {nodes.map((n) => (
@@ -450,7 +523,11 @@ export default function WorkflowStudio({
                 <input
                   aria-label="Expected value as JSON"
                   key={selected + ":value"}
-                  defaultValue={JSON.stringify(current.config.value)}
+                  value={
+                    invalidValues[selected] ??
+                    JSON.stringify(current.config.value)
+                  }
+                  aria-invalid={selected in invalidValues}
                   disabled={current.config.operator === "is_null"}
                   onChange={(e) => {
                     try {
@@ -465,16 +542,27 @@ export default function WorkflowStudio({
                           ...current,
                           config: { ...current.config, value },
                         });
-                        setInputError(false);
+
+                        setInvalidValues((values) => {
+                          const next = { ...values };
+                          delete next[selected];
+                          return next;
+                        });
                         setMessage("");
                       } else {
-                        setInputError(true);
+                        setInvalidValues((values) => ({
+                          ...values,
+                          [selected]: e.target.value,
+                        }));
                         setMessage(
                           "Expected a JSON scalar, with strings up to 500 characters.",
                         );
                       }
                     } catch {
-                      setInputError(true);
+                      setInvalidValues((values) => ({
+                        ...values,
+                        [selected]: e.target.value,
+                      }));
                       setMessage('Use JSON: "critical", 5, true or null.');
                     }
                   }}
@@ -528,7 +616,7 @@ export default function WorkflowStudio({
                   ),
                 );
                 setSelected(nodes.find((n) => n.id !== selected)?.id ?? "");
-                setInputError(false);
+
                 setPreview(null);
               }}
             >

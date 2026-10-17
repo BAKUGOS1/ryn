@@ -117,7 +117,6 @@ export async function AutomationPanel({
                   {can(role, "edit") && w.state !== "archived" && (
                     <>
                       <StudioLauncher
-                        key={w.revision}
                         organizationId={organizationId}
                         id={w.id}
                         revision={w.revision}

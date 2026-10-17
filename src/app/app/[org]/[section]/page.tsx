@@ -53,15 +53,16 @@ export default async function Workspace({
   const org = orgs.data.find((o) => o.id === id) as Organization;
   if (!org) notFound();
   const list = members.data as Membership[];
-  const invites = can(role, "invite")
-    ? await db
-        .from("organization_invites")
-        .select("id,email,role,expires_at")
-        .eq("organization_id", id)
-        .is("accepted_at", null)
-        .is("revoked_at", null)
-        .gt("expires_at", new Date().toISOString())
-    : null;
+  const invites =
+    section === "members" && can(role, "invite")
+      ? await db
+          .from("organization_invites")
+          .select("id,email,role,expires_at")
+          .eq("organization_id", id)
+          .is("accepted_at", null)
+          .is("revoked_at", null)
+          .gt("expires_at", new Date().toISOString())
+      : null;
   if (invites?.error) throw new Error("Invitations unavailable");
   return (
     <WorkspaceShell org={org} organizations={orgs.data} section={section}>
